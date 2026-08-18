@@ -7,18 +7,45 @@
     <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-aframe.prod.js"></script>
     <style>
-      body { margin: 0; overflow: hidden; }
+      body { margin: 0; overflow: hidden; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+      
+      /* Верхняя подсказка */
       #hint {
-        position: absolute; top: 18px; left: 50%; transform: translateX(-50%);
-        background: rgba(0, 0, 0, 0.85); color: #fff; padding: 10px 22px;
-        border-radius: 24px; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-        font-size: 13px; letter-spacing: 0.5px; z-index: 999; pointer-events: none;
-        border: 1px solid rgba(255, 215, 0, 0.5); text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+        position: absolute; top: 16px; left: 50%; transform: translateX(-50%);
+        background: rgba(0, 0, 0, 0.85); color: #fff; padding: 10px 20px;
+        border-radius: 20px; font-size: 13px; z-index: 10; pointer-events: none;
+        border: 1px solid rgba(255, 215, 0, 0.4); text-align: center;
+      }
+
+      /* Всплывающее меню стран */
+      #modal {
+        display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+        background: rgba(20, 20, 20, 0.95); backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 215, 0, 0.5); border-radius: 16px;
+        padding: 20px; width: 80%; max-width: 320px; z-index: 1000; box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+      }
+      #modal h3 { margin: 0 0 14px 0; color: #FFD700; font-size: 18px; text-align: center; }
+      .country-btn {
+        display: block; width: 100%; padding: 10px 14px; margin-bottom: 8px; box-sizing: border-box;
+        background: rgba(255, 255, 255, 0.1); color: #fff; border: 1px solid rgba(255,255,255,0.15);
+        border-radius: 10px; font-size: 14px; text-decoration: none; text-align: left; transition: 0.2s;
+      }
+      .country-btn:active { background: rgba(255, 215, 0, 0.3); border-color: #FFD700; }
+      .close-btn {
+        display: block; width: 100%; margin-top: 12px; padding: 8px; background: transparent;
+        color: #aaa; border: none; font-size: 13px; text-align: center; cursor: pointer;
       }
     </style>
   </head>
   <body>
-    <div id="hint">✨ Нажмите на флаг страны, чтобы открыть фотоальбом</div>
+    <div id="hint">✨ Наведите камеру на материк и нажмите на маркер</div>
+
+    <!-- Всплывающее окно со странами -->
+    <div id="modal">
+      <h3 id="modal-title">Выберите страну</h3>
+      <div id="modal-links"></div>
+      <button class="close-btn" onclick="closeModal()">Закрыть ✕</button>
+    </div>
 
     <a-scene 
       mindar-image="imageTargetSrc: ./targets.mind; maxTrack: 2;" 
@@ -26,128 +53,82 @@
       renderer="colorManagement: true, physicallyCorrectLights" 
       vr-mode-ui="enabled: false" 
       device-orientation-permission-ui="enabled: false">
-
-      <!-- Загрузка иконок флагов высокого качества -->
-      <a-assets>
-        <img id="flag-it" src="https://flagcdn.com/w160/it.png" crossorigin="anonymous">
-        <img id="flag-hr" src="https://flagcdn.com/w160/hr.png" crossorigin="anonymous">
-        <img id="flag-es" src="https://flagcdn.com/w160/es.png" crossorigin="anonymous">
-        <img id="flag-pt" src="https://flagcdn.com/w160/pt.png" crossorigin="anonymous">
-        <img id="flag-de" src="https://flagcdn.com/w160/de.png" crossorigin="anonymous">
-        <img id="flag-pl" src="https://flagcdn.com/w160/pl.png" crossorigin="anonymous">
-        <img id="flag-dk" src="https://flagcdn.com/w160/dk.png" crossorigin="anonymous">
-        <img id="flag-se" src="https://flagcdn.com/w160/se.png" crossorigin="anonymous">
-        <img id="flag-fi" src="https://flagcdn.com/w160/fi.png" crossorigin="anonymous">
-        <img id="flag-do" src="https://flagcdn.com/w160/do.png" crossorigin="anonymous">
-      </a-assets>
       
       <a-camera position="0 0 0" look-controls="enabled: false" cursor="fuse: false; rayOrigin: mouse;" raycaster="far: 10000; objects: .clickable"></a-camera>
 
       <!-- ========================================== -->
-      <!-- ФОТО 1 (targetIndex: 0): ОБЩИЙ ВИД         -->
-      <!-- ========================================== -->
-      <a-entity mindar-image-target="targetIndex: 0">
-        
-        <!-- 1. ИТАЛИЯ -->
-        <a-plane class="clickable" position="0.038 0.045 0.01" width="0.024" height="0.016" material="src: #flag-it"
-                 onclick="window.open('https://disk.yandex.ru/d/ССЫЛКА_ИТАЛИЯ', '_blank')"></a-plane>
-
-        <!-- 2. САРДИНИЯ (Итальянский флаг уменьшенный) -->
-        <a-plane class="clickable" position="0.020 0.030 0.01" width="0.016" height="0.011" material="src: #flag-it"
-                 onclick="window.open('https://disk.yandex.ru/d/ССЫЛКА_САРДИНИЯ', '_blank')"></a-plane>
-
-        <!-- 3. ХОРВАТИЯ -->
-        <a-plane class="clickable" position="0.052 0.052 0.01" width="0.024" height="0.016" material="src: #flag-hr"
-                 onclick="window.open('https://disk.yandex.ru/d/ССЫЛКА_ХОРВАТИЯ', '_blank')"></a-plane>
-
-        <!-- 4. ИСПАНИЯ -->
-        <a-plane class="clickable" position="-0.028 0.032 0.01" width="0.026" height="0.017" material="src: #flag-es"
-                 onclick="window.open('https://disk.yandex.ru/d/ССЫЛКА_ИСПАНИЯ', '_blank')"></a-plane>
-
-        <!-- 5. ПОРТУГАЛИЯ -->
-        <a-plane class="clickable" position="-0.048 0.030 0.01" width="0.022" height="0.015" material="src: #flag-pt"
-                 onclick="window.open('https://disk.yandex.ru/d/ССЫЛКА_ПОРТУГАЛИЯ', '_blank')"></a-plane>
-
-        <!-- 6. ГЕРМАНИЯ -->
-        <a-plane class="clickable" position="0.022 0.088 0.01" width="0.026" height="0.017" material="src: #flag-de"
-                 onclick="window.open('https://disk.yandex.ru/d/ССЫЛКА_ГЕРМАНИЯ', '_blank')"></a-plane>
-
-        <!-- 7. ПОЛЬША -->
-        <a-plane class="clickable" position="0.058 0.092 0.01" width="0.026" height="0.017" material="src: #flag-pl"
-                 onclick="window.open('https://disk.yandex.ru/d/ССЫЛКА_ПОЛЬША', '_blank')"></a-plane>
-
-        <!-- 8. ДАНИЯ -->
-        <a-plane class="clickable" position="0.022 0.118 0.01" width="0.022" height="0.015" material="src: #flag-dk"
-                 onclick="window.open('https://disk.yandex.ru/d/ССЫЛКА_ДАНИЯ', '_blank')"></a-plane>
-
-        <!-- 9. ШВЕЦИЯ -->
-        <a-plane class="clickable" position="0.042 0.155 0.01" width="0.026" height="0.017" material="src: #flag-se"
-                 onclick="window.open('https://disk.yandex.ru/d/ССЫЛКА_ШВЕЦИЯ', '_blank')"></a-plane>
-
-        <!-- 10. ФИНЛЯНДИЯ -->
-        <a-plane class="clickable" position="0.075 0.165 0.01" width="0.026" height="0.017" material="src: #flag-fi"
-                 onclick="window.open('https://disk.yandex.ru/d/ССЫЛКА_ФИНЛЯНДИЯ', '_blank')"></a-plane>
-
-        <!-- 11. ДОМИНИКАНА -->
-        <a-plane class="clickable" position="-0.260 -0.015 0.01" width="0.026" height="0.017" material="src: #flag-do"
-                 onclick="window.open('https://disk.yandex.ru/d/ССЫЛКА_ДОМИНИКАНА', '_blank')"></a-plane>
-
-      </a-entity>
-
-     <!-- ========================================== -->
-      <!-- ФОТО 2 (targetIndex: 1): ЕВРОПА КРУПНО     -->
+      <!-- ФОТО 2 (targetIndex: 1): ЕВРОПА            -->
       <!-- ========================================== -->
       <a-entity mindar-image-target="targetIndex: 1">
-        
-        <!-- 1. ИТАЛИЯ (Опущена ровно на сапог) -->
-        <a-plane class="clickable" position="-0.11 -0.25 0.01" width="0.045" height="0.03" material="src: #flag-it" 
-                 onclick="window.open('https://disk.yandex.ru/d/ССЫЛКА_ИТАЛИЯ', '_blank')"></a-plane>
-        
-        <!-- 2. САРДИНИЯ (Опущена ровно на остров Сардиния) -->
-        <a-plane class="clickable" position="-0.19 -0.28 0.01" width="0.03" height="0.02" material="src: #flag-it" 
-                 onclick="window.open('https://disk.yandex.ru/d/ССЫЛКА_САРДИНИЯ', '_blank')"></a-plane>
-        
-        <!-- 3. ХОРВАТИЯ (Балканы) -->
-        <a-plane class="clickable" position="-0.04 -0.16 0.01" width="0.04" height="0.026" material="src: #flag-hr" 
-                 onclick="window.open('https://disk.yandex.ru/d/ССЫЛКА_ХОРВАТИЯ', '_blank')"></a-plane>
-        
-        <!-- 4. ИСПАНИЯ (Сдвинута вправо в центр Испании) -->
-        <a-plane class="clickable" position="-0.27 -0.28 0.01" width="0.055" height="0.036" material="src: #flag-es" 
-                 onclick="window.open('https://disk.yandex.ru/d/ССЫЛКА_ИСПАНИЯ', '_blank')"></a-plane>
-        
-        <!-- 5. ПОРТУГАЛИЯ (Левый край полуострова) -->
-        <a-plane class="clickable" position="-0.36 -0.28 0.01" width="0.038" height="0.025" material="src: #flag-pt" 
-                 onclick="window.open('https://disk.yandex.ru/d/ССЫЛКА_ПОРТУГАЛИЯ', '_blank')"></a-plane>
-        
-        <!-- 6. ГЕРМАНИЯ (Центр Европы) -->
-        <a-plane class="clickable" position="-0.16 -0.06 0.01" width="0.048" height="0.032" material="src: #flag-de" 
-                 onclick="window.open('https://disk.yandex.ru/d/ССЫЛКА_ГЕРМАНИЯ', '_blank')"></a-plane>
-        
-        <!-- 7. ПОЛЬША (Правее Германии) -->
-        <a-plane class="clickable" position="-0.04 -0.05 0.01" width="0.048" height="0.032" material="src: #flag-pl" 
-                 onclick="window.open('https://disk.yandex.ru/d/ССЫЛКА_ПОЛЬША', '_blank')"></a-plane>
-        
-        <!-- 8. ДАНИЯ (Полуостров над Германией) -->
-        <a-plane class="clickable" position="-0.16 0.04 0.01" width="0.035" height="0.023" material="src: #flag-dk" 
-                 onclick="window.open('https://disk.yandex.ru/d/ССЫЛКА_ДАНИЯ', '_blank')"></a-plane>
-        
-        <!-- 9. ШВЕЦИЯ (Сдвинута вправо на Скандинавию) -->
-        <a-plane class="clickable" position="-0.04 0.20 0.01" width="0.05" height="0.033" material="src: #flag-se" 
-                 onclick="window.open('https://disk.yandex.ru/d/ССЫЛКА_ШВЕЦИЯ', '_blank')"></a-plane>
-        
-        <!-- 10. ФИНЛЯНДИЯ (Сдвинута вправо на территорию Финляндии) -->
-        <a-plane class="clickable" position="0.09 0.22 0.01" width="0.05" height="0.033" material="src: #flag-fi" 
-                 onclick="window.open('https://disk.yandex.ru/d/ССЫЛКА_ФИНЛЯНДИЯ', '_blank')"></a-plane>
-
+        <!-- Крупная плашка Европа в центре кадра -->
+        <a-plane class="clickable" position="-0.15 -0.10 0.01" width="0.28" height="0.08" color="#111111" opacity="0.9"
+                 onclick="openMenu('europe')">
+          <a-text value="🌍 Страны Европы" align="center" color="#FFD700" width="1.2"></a-text>
+        </a-plane>
       </a-entity>
 
       <!-- ========================================== -->
-      <!-- ФОТО 4 (targetIndex: 3): КАРИБЫ КРУПНО     -->
+      <!-- ФОТО 4 (targetIndex: 3): КАРИБЫ            -->
       <!-- ========================================== -->
       <a-entity mindar-image-target="targetIndex: 3">
-        <a-plane class="clickable" position="0.02 0.35 0.01" width="0.065" height="0.043" material="src: #flag-do" onclick="window.open('https://disk.yandex.ru/d/ССЫЛКА_ДОМИНИКАНА', '_blank')"></a-plane>
+        <!-- Крупная плашка Карибы -->
+        <a-plane class="clickable" position="0.0 0.0 0.01" width="0.32" height="0.08" color="#111111" opacity="0.9"
+                 onclick="openMenu('caribbean')">
+          <a-text value="🏝️ Карибы" align="center" color="#FFD700" width="1.2"></a-text>
+        </a-plane>
       </a-entity>
 
     </a-scene>
+
+    <script>
+      // Ссылки на ваши фотоальбомы по регионам
+      const data = {
+        europe: {
+          title: "🌍 Путешествия по Европе",
+          countries: [
+            { name: "🇮🇹 Италия", url: "https://disk.yandex.ru/d/ССЫЛКА_ИТАЛИЯ" },
+            { name: "🏝️ Остров Сардиния", url: "https://disk.yandex.ru/d/ССЫЛКА_САРДИНИЯ" },
+            { name: "🇭🇷 Хорватия", url: "https://disk.yandex.ru/d/ССЫЛКА_ХОРВАТИЯ" },
+            { name: "🇪🇸 Испания", url: "https://disk.yandex.ru/d/ССЫЛКА_ИСПАНИЯ" },
+            { name: "🇵🇹 Португалия", url: "https://disk.yandex.ru/d/ССЫЛКА_ПОРТУГАЛИЯ" },
+            { name: "🇩🇪 Германия", url: "https://disk.yandex.ru/d/ССЫЛКА_ГЕРМАНИЯ" },
+            { name: "🇵🇱 Польша", url: "https://disk.yandex.ru/d/ССЫЛКА_ПОЛЬША" },
+            { name: "🇩🇰 Дания", url: "https://disk.yandex.ru/d/ССЫЛКА_ДАНИЯ" },
+            { name: "🇸🇪 Швеция", url: "https://disk.yandex.ru/d/ССЫЛКА_ШВЕЦИЯ" },
+            { name: "🇫🇮 Финляндия", url: "https://disk.yandex.ru/d/ССЫЛКА_ФИНЛЯНДИЯ" }
+          ]
+        },
+        caribbean: {
+          title: "🏝️ Карибский бассейн",
+          countries: [
+            { name: "🇩🇴 Доминиканская Республика", url: "https://disk.yandex.ru/d/ССЫЛКА_ДОМИНИКАНА" }
+          ]
+        }
+      };
+
+      function openMenu(regionKey) {
+        const region = data[regionKey];
+        if (!region) return;
+
+        document.getElementById('modal-title').innerText = region.title;
+        const container = document.getElementById('modal-links');
+        container.innerHTML = '';
+
+        region.countries.forEach(item => {
+          const a = document.createElement('a');
+          a.className = 'country-btn';
+          a.innerText = item.name;
+          a.href = item.url;
+          a.target = '_blank';
+          container.appendChild(a);
+        });
+
+        document.getElementById('modal').style.display = 'block';
+      }
+
+      function closeModal() {
+        document.getElementById('modal').style.display = 'none';
+      }
+    </script>
   </body>
 </html>
