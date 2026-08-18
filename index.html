@@ -29,11 +29,14 @@
       
       <a-camera position="0 0 0" look-controls="enabled: false" cursor="fuse: false; rayOrigin: mouse;" raycaster="far: 10000; objects: .clickable"></a-camera>
 
+     <!-- Привязка к маркеру карты -->
       <a-entity mindar-image-target="targetIndex: 0">
         
+        <!-- === ИСПРАВЛЕННЫЕ КООРДИНАТЫ (Сдвиг на запад и юг) === -->
+
         <!-- 1. ИТАЛИЯ -->
         <a-circle class="clickable" 
-                  position="0.038 0.088 0.01" 
+                  position="-0.012 -0.012 0.01" 
                   radius="0.015" 
                   color="#FFD700" 
                   opacity="0.9"
@@ -42,7 +45,7 @@
 
         <!-- 2. ОСТРОВ САРДИНИЯ -->
         <a-circle class="clickable" 
-                  position="0.024 0.076 0.01" 
+                  position="-0.026 -0.024 0.01" 
                   radius="0.010" 
                   color="#FFD700" 
                   opacity="0.9"
@@ -51,7 +54,7 @@
 
         <!-- 3. ХОРВАТИЯ -->
         <a-circle class="clickable" 
-                  position="0.048 0.098 0.01" 
+                  position="-0.002 -0.002 0.01" 
                   radius="0.013" 
                   color="#FFD700" 
                   opacity="0.9"
@@ -60,7 +63,7 @@
 
         <!-- 4. ИСПАНИЯ -->
         <a-circle class="clickable" 
-                  position="-0.012 0.078 0.01" 
+                  position="-0.062 -0.022 0.01" 
                   radius="0.018" 
                   color="#FFD700" 
                   opacity="0.9"
@@ -69,7 +72,7 @@
 
         <!-- 5. ПОРТУГАЛИЯ -->
         <a-circle class="clickable" 
-                  position="-0.028 0.076 0.01" 
+                  position="-0.078 -0.024 0.01" 
                   radius="0.012" 
                   color="#FFD700" 
                   opacity="0.9"
@@ -78,7 +81,7 @@
 
         <!-- 6. ГЕРМАНИЯ -->
         <a-circle class="clickable" 
-                  position="0.028 0.128 0.01" 
+                  position="-0.022 0.028 0.01" 
                   radius="0.017" 
                   color="#FFD700" 
                   opacity="0.9"
@@ -87,7 +90,7 @@
 
         <!-- 7. ПОЛЬША -->
         <a-circle class="clickable" 
-                  position="0.054 0.130 0.01" 
+                  position="0.004 0.030 0.01" 
                   radius="0.017" 
                   color="#FFD700" 
                   opacity="0.9"
@@ -96,7 +99,7 @@
 
         <!-- 8. ДАНИЯ -->
         <a-circle class="clickable" 
-                  position="0.027 0.148 0.01" 
+                  position="-0.023 0.048 0.01" 
                   radius="0.012" 
                   color="#FFD700" 
                   opacity="0.9"
@@ -105,7 +108,7 @@
 
         <!-- 9. ШВЕЦИЯ -->
         <a-circle class="clickable" 
-                  position="0.041 0.178 0.01" 
+                  position="-0.009 0.078 0.01" 
                   radius="0.018" 
                   color="#FFD700" 
                   opacity="0.9"
@@ -114,16 +117,16 @@
 
         <!-- 10. ФИНЛЯНДИЯ -->
         <a-circle class="clickable" 
-                  position="0.065 0.186 0.01" 
+                  position="0.015 0.086 0.01" 
                   radius="0.018" 
                   color="#FFD700" 
                   opacity="0.9"
                   onclick="window.open('https://disk.yandex.ru/d/ССЫЛКА_ФИНЛЯНДИЯ', '_blank')">
         </a-circle>
 
-        <!-- 11. ДОМИНИКАНСКАЯ РЕСПУБЛИКА (Карибы) -->
+        <!-- 11. ДОМИНИКАНСКАЯ РЕСПУБЛИКА (Сдвиг на запад и юг) -->
         <a-circle class="clickable" 
-                  position="-0.228 0.040 0.01" 
+                  position="-0.278 -0.060 0.01" 
                   radius="0.012" 
                   color="#FFD700" 
                   opacity="0.9"
