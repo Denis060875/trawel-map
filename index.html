@@ -55,11 +55,11 @@
       device-orientation-permission-ui="enabled: false">
 
       <a-assets>
-        <canvas id="btn-europe" width="512" height="160"></canvas>
-        <canvas id="btn-caribbean" width="512" height="160"></canvas>
-        <canvas id="btn-north-america" width="512" height="160"></canvas>
-        <canvas id="btn-africa" width="512" height="160"></canvas>
-        <canvas id="btn-asia" width="512" height="160"></canvas>
+        <canvas id="btn-europe" width="640" height="160"></canvas>
+        <canvas id="btn-caribbean" width="640" height="160"></canvas>
+        <canvas id="btn-north-america" width="640" height="160"></canvas>
+        <canvas id="btn-africa" width="640" height="160"></canvas>
+        <canvas id="btn-asia" width="640" height="160"></canvas>
       </a-assets>
       
       <a-camera position="0 0 0" look-controls="enabled: false" cursor="fuse: false; rayOrigin: mouse;" raycaster="far: 10000; objects: .clickable"></a-camera>
@@ -68,7 +68,7 @@
       <!-- ФОТО 2 (targetIndex: 1): EUROPE            -->
       <!-- ========================================== -->
       <a-entity mindar-image-target="targetIndex: 1">
-        <a-plane class="clickable" position="-0.15 -0.10 0.01" width="0.30" height="0.09" material="src: #btn-europe; transparent: true;"
+        <a-plane class="clickable" position="-0.15 -0.06 0.01" width="0.32" height="0.08" material="src: #btn-europe; transparent: true;"
                  onclick="openMenu('europe')"></a-plane>
       </a-entity>
 
@@ -76,7 +76,7 @@
       <!-- ФОТО 3 (targetIndex: 2): NORTH AMERICA     -->
       <!-- ========================================== -->
       <a-entity mindar-image-target="targetIndex: 2">
-        <a-plane class="clickable" position="0.0 0.0 0.01" width="0.34" height="0.09" material="src: #btn-north-america; transparent: true;"
+        <a-plane class="clickable" position="0.0 0.0 0.01" width="0.34" height="0.085" material="src: #btn-north-america; transparent: true;"
                  onclick="openMenu('northAmerica')"></a-plane>
       </a-entity>
 
@@ -84,7 +84,7 @@
       <!-- ФОТО 4 (targetIndex: 3): CARIBBEAN         -->
       <!-- ========================================== -->
       <a-entity mindar-image-target="targetIndex: 3">
-        <a-plane class="clickable" position="0.0 0.0 0.01" width="0.30" height="0.09" material="src: #btn-caribbean; transparent: true;"
+        <a-plane class="clickable" position="0.0 0.05 0.01" width="0.34" height="0.085" material="src: #btn-caribbean; transparent: true;"
                  onclick="openMenu('caribbean')"></a-plane>
       </a-entity>
 
@@ -92,7 +92,7 @@
       <!-- ФОТО 5 (targetIndex: 4): AFRICA & GULF     -->
       <!-- ========================================== -->
       <a-entity mindar-image-target="targetIndex: 4">
-        <a-plane class="clickable" position="0.0 0.0 0.01" width="0.30" height="0.09" material="src: #btn-africa; transparent: true;"
+        <a-plane class="clickable" position="0.0 0.0 0.01" width="0.34" height="0.085" material="src: #btn-africa; transparent: true;"
                  onclick="openMenu('africa')"></a-plane>
       </a-entity>
 
@@ -100,35 +100,32 @@
       <!-- ФОТО 6 (targetIndex: 5): ASIA & OCEANIA    -->
       <!-- ========================================== -->
       <a-entity mindar-image-target="targetIndex: 5">
-        <a-plane class="clickable" position="0.0 0.0 0.01" width="0.30" height="0.09" material="src: #btn-asia; transparent: true;"
+        <a-plane class="clickable" position="0.0 0.0 0.01" width="0.34" height="0.085" material="src: #btn-asia; transparent: true;"
                  onclick="openMenu('asia')"></a-plane>
       </a-entity>
 
     </a-scene>
 
     <script>
-      // Отрисовка стильных плашек с английскими названиями
+      // Генерация плашек с расширенными полями
       function drawButton(canvasId, text) {
         const canvas = document.getElementById(canvasId);
         if (!canvas) return;
         const ctx = canvas.getContext('2d');
         
-        // Темный полупрозрачный фон
         ctx.fillStyle = "rgba(15, 15, 15, 0.92)";
-        ctx.roundRect(10, 10, 492, 140, 30);
+        ctx.roundRect(10, 10, 620, 140, 30);
         ctx.fill();
 
-        // Золотая элегантная рамка
         ctx.lineWidth = 6;
         ctx.strokeStyle = "#FFD700";
         ctx.stroke();
 
-        // Текст кнопки
         ctx.fillStyle = "#FFFFFF";
-        ctx.font = "bold 44px sans-serif";
+        ctx.font = "bold 40px sans-serif";
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
-        ctx.fillText(text, 256, 80);
+        ctx.fillText(text, 320, 80);
       }
 
       drawButton('btn-europe', '🇪🇺 Europe');
@@ -137,7 +134,6 @@
       drawButton('btn-africa', '🌍 Africa & Gulf');
       drawButton('btn-asia', '⛩️ Asia & Oceania');
 
-      // Данные альбомов
       const data = {
         europe: {
           title: "🇪🇺 Europe Travels",
