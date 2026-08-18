@@ -10,18 +10,18 @@
       body { margin: 0; overflow: hidden; }
       #hint {
         position: absolute; top: 18px; left: 50%; transform: translateX(-50%);
-        background: rgba(0, 0, 0, 0.8); color: #fff; padding: 10px 20px;
+        background: rgba(0, 0, 0, 0.85); color: #fff; padding: 10px 22px;
         border-radius: 24px; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         font-size: 13px; letter-spacing: 0.5px; z-index: 999; pointer-events: none;
-        border: 1px solid rgba(255, 215, 0, 0.4); text-align: center;
+        border: 1px solid rgba(255, 215, 0, 0.5); text-align: center;
       }
     </style>
   </head>
   <body>
-    <div id="hint">✨ Нажмите на светящуюся точку страны для открытия фото</div>
+    <div id="hint">✨ Нажмите на точку страны для открытия фото</div>
 
     <a-scene 
-      mindar-image="imageTargetSrc: ./targets.mind;" 
+      mindar-image="imageTargetSrc: ./targets.mind; maxTrack: 2;" 
       color-space="sRGB" 
       renderer="colorManagement: true, physicallyCorrectLights" 
       vr-mode-ui="enabled: false" 
@@ -29,111 +29,69 @@
       
       <a-camera position="0 0 0" look-controls="enabled: false" cursor="fuse: false; rayOrigin: mouse;" raycaster="far: 10000; objects: .clickable"></a-camera>
 
-     <!-- Привязка к маркеру карты -->
+      <!-- ========================================== -->
+      <!-- ФОТО 1: ОБЩИЙ ВИД (Когда смотрите издалека)-->
+      <!-- ========================================== -->
       <a-entity mindar-image-target="targetIndex: 0">
         
-        <!-- === ИСПРАВЛЕННЫЕ КООРДИНАТЫ (Сдвиг на запад и юг) === -->
-
         <!-- 1. ИТАЛИЯ -->
-        <a-circle class="clickable" 
-                  position="-0.012 -0.012 0.01" 
-                  radius="0.015" 
-                  color="#FFD700" 
-                  opacity="0.9"
-                  onclick="window.open('https://disk.yandex.ru/d/ССЫЛКА_ИТАЛИЯ', '_blank')">
-        </a-circle>
+        <a-circle class="clickable" position="0.038 0.045 0.01" radius="0.012" color="#FFD700" opacity="0.9" onclick="window.open('https://disk.yandex.ru/d/ССЫЛКА_ИТАЛИЯ', '_blank')"></a-circle>
 
-        <!-- 2. ОСТРОВ САРДИНИЯ -->
-        <a-circle class="clickable" 
-                  position="-0.026 -0.024 0.01" 
-                  radius="0.010" 
-                  color="#FFD700" 
-                  opacity="0.9"
-                  onclick="window.open('https://disk.yandex.ru/d/ССЫЛКА_САРДИНИЯ', '_blank')">
-        </a-circle>
+        <!-- 2. САРДИНИЯ -->
+        <a-circle class="clickable" position="0.020 0.030 0.01" radius="0.008" color="#FFD700" opacity="0.9" onclick="window.open('https://disk.yandex.ru/d/ССЫЛКА_САРДИНИЯ', '_blank')"></a-circle>
 
         <!-- 3. ХОРВАТИЯ -->
-        <a-circle class="clickable" 
-                  position="-0.002 -0.002 0.01" 
-                  radius="0.013" 
-                  color="#FFD700" 
-                  opacity="0.9"
-                  onclick="window.open('https://disk.yandex.ru/d/ССЫЛКА_ХОРВАТИЯ', '_blank')">
-        </a-circle>
+        <a-circle class="clickable" position="0.052 0.052 0.01" radius="0.010" color="#FFD700" opacity="0.9" onclick="window.open('https://disk.yandex.ru/d/ССЫЛКА_ХОРВАТИЯ', '_blank')"></a-circle>
 
         <!-- 4. ИСПАНИЯ -->
-        <a-circle class="clickable" 
-                  position="-0.062 -0.022 0.01" 
-                  radius="0.018" 
-                  color="#FFD700" 
-                  opacity="0.9"
-                  onclick="window.open('https://disk.yandex.ru/d/ССЫЛКА_ИСПАНИЯ', '_blank')">
-        </a-circle>
+        <a-circle class="clickable" position="-0.028 0.032 0.01" radius="0.014" color="#FFD700" opacity="0.9" onclick="window.open('https://disk.yandex.ru/d/ССЫЛКА_ИСПАНИЯ', '_blank')"></a-circle>
 
         <!-- 5. ПОРТУГАЛИЯ -->
-        <a-circle class="clickable" 
-                  position="-0.078 -0.024 0.01" 
-                  radius="0.012" 
-                  color="#FFD700" 
-                  opacity="0.9"
-                  onclick="window.open('https://disk.yandex.ru/d/ССЫЛКА_ПОРТУГАЛИЯ', '_blank')">
-        </a-circle>
+        <a-circle class="clickable" position="-0.048 0.030 0.01" radius="0.010" color="#FFD700" opacity="0.9" onclick="window.open('https://disk.yandex.ru/d/ССЫЛКА_ПОРТУГАЛИЯ', '_blank')"></a-circle>
 
         <!-- 6. ГЕРМАНИЯ -->
-        <a-circle class="clickable" 
-                  position="-0.022 0.028 0.01" 
-                  radius="0.017" 
-                  color="#FFD700" 
-                  opacity="0.9"
-                  onclick="window.open('https://disk.yandex.ru/d/ССЫЛКА_ГЕРМАНИЯ', '_blank')">
-        </a-circle>
+        <a-circle class="clickable" position="0.022 0.088 0.01" radius="0.013" color="#FFD700" opacity="0.9" onclick="window.open('https://disk.yandex.ru/d/ССЫЛКА_ГЕРМАНИЯ', '_blank')"></a-circle>
 
         <!-- 7. ПОЛЬША -->
-        <a-circle class="clickable" 
-                  position="0.004 0.030 0.01" 
-                  radius="0.017" 
-                  color="#FFD700" 
-                  opacity="0.9"
-                  onclick="window.open('https://disk.yandex.ru/d/ССЫЛКА_ПОЛЬША', '_blank')">
-        </a-circle>
+        <a-circle class="clickable" position="0.058 0.092 0.01" radius="0.013" color="#FFD700" opacity="0.9" onclick="window.open('https://disk.yandex.ru/d/ССЫЛКА_ПОЛЬША', '_blank')"></a-circle>
 
         <!-- 8. ДАНИЯ -->
-        <a-circle class="clickable" 
-                  position="-0.023 0.048 0.01" 
-                  radius="0.012" 
-                  color="#FFD700" 
-                  opacity="0.9"
-                  onclick="window.open('https://disk.yandex.ru/d/ССЫЛКА_ДАНИЯ', '_blank')">
-        </a-circle>
+        <a-circle class="clickable" position="0.022 0.118 0.01" radius="0.010" color="#FFD700" opacity="0.9" onclick="window.open('https://disk.yandex.ru/d/ССЫЛКА_ДАНИЯ', '_blank')"></a-circle>
 
         <!-- 9. ШВЕЦИЯ -->
-        <a-circle class="clickable" 
-                  position="-0.009 0.078 0.01" 
-                  radius="0.018" 
-                  color="#FFD700" 
-                  opacity="0.9"
-                  onclick="window.open('https://disk.yandex.ru/d/ССЫЛКА_ШВЕЦИЯ', '_blank')">
-        </a-circle>
+        <a-circle class="clickable" position="0.042 0.155 0.01" radius="0.014" color="#FFD700" opacity="0.9" onclick="window.open('https://disk.yandex.ru/d/ССЫЛКА_ШВЕЦИЯ', '_blank')"></a-circle>
 
         <!-- 10. ФИНЛЯНДИЯ -->
-        <a-circle class="clickable" 
-                  position="0.015 0.086 0.01" 
-                  radius="0.018" 
-                  color="#FFD700" 
-                  opacity="0.9"
-                  onclick="window.open('https://disk.yandex.ru/d/ССЫЛКА_ФИНЛЯНДИЯ', '_blank')">
-        </a-circle>
+        <a-circle class="clickable" position="0.075 0.165 0.01" radius="0.014" color="#FFD700" opacity="0.9" onclick="window.open('https://disk.yandex.ru/d/ССЫЛКА_ФИНЛЯНДИЯ', '_blank')"></a-circle>
 
-        <!-- 11. ДОМИНИКАНСКАЯ РЕСПУБЛИКА (Сдвиг на запад и юг) -->
-        <a-circle class="clickable" 
-                  position="-0.278 -0.060 0.01" 
-                  radius="0.012" 
-                  color="#FFD700" 
-                  opacity="0.9"
-                  onclick="window.open('https://disk.yandex.ru/d/ССЫЛКА_ДОМИНИКАНА', '_blank')">
-        </a-circle>
+        <!-- 11. ДОМИНИКАНСКАЯ РЕСПУБЛИКА -->
+        <a-circle class="clickable" position="-0.260 -0.015 0.01" radius="0.012" color="#FFD700" opacity="0.9" onclick="window.open('https://disk.yandex.ru/d/ССЫЛКА_ДОМИНИКАНА', '_blank')"></a-circle>
 
       </a-entity>
+
+      <!-- ========================================== -->
+      <!-- ФОТО 2: ЕВРОПА КРУПНО (При приближении)     -->
+      <!-- ========================================== -->
+      <a-entity mindar-image-target="targetIndex: 1">
+        <a-circle class="clickable" position="0.04 -0.15 0.01" radius="0.035" color="#FFD700" opacity="0.9" onclick="window.open('https://disk.yandex.ru/d/ССЫЛКА_ИТАЛИЯ', '_blank')"></a-circle>
+        <a-circle class="clickable" position="-0.03 -0.21 0.01" radius="0.022" color="#FFD700" opacity="0.9" onclick="window.open('https://disk.yandex.ru/d/ССЫЛКА_САРДИНИЯ', '_blank')"></a-circle>
+        <a-circle class="clickable" position="0.10 -0.11 0.01" radius="0.028" color="#FFD700" opacity="0.9" onclick="window.open('https://disk.yandex.ru/d/ССЫЛКА_ХОРВАТИЯ', '_blank')"></a-circle>
+        <a-circle class="clickable" position="-0.26 -0.22 0.01" radius="0.045" color="#FFD700" opacity="0.9" onclick="window.open('https://disk.yandex.ru/d/ССЫЛКА_ИСПАНИЯ', '_blank')"></a-circle>
+        <a-circle class="clickable" position="-0.39 -0.22 0.01" radius="0.028" color="#FFD700" opacity="0.9" onclick="window.open('https://disk.yandex.ru/d/ССЫЛКА_ПОРТУГАЛИЯ', '_blank')"></a-circle>
+        <a-circle class="clickable" position="-0.02 0.05 0.01" radius="0.04" color="#FFD700" opacity="0.9" onclick="window.open('https://disk.yandex.ru/d/ССЫЛКА_ГЕРМАНИЯ', '_blank')"></a-circle>
+        <a-circle class="clickable" position="0.15 0.07 0.01" radius="0.04" color="#FFD700" opacity="0.9" onclick="window.open('https://disk.yandex.ru/d/ССЫЛКА_ПОЛЬША', '_blank')"></a-circle>
+        <a-circle class="clickable" position="-0.02 0.18 0.01" radius="0.028" color="#FFD700" opacity="0.9" onclick="window.open('https://disk.yandex.ru/d/ССЫЛКА_ДАНИЯ', '_blank')"></a-circle>
+        <a-circle class="clickable" position="0.08 0.32 0.01" radius="0.04" color="#FFD700" opacity="0.9" onclick="window.open('https://disk.yandex.ru/d/ССЫЛКА_ШВЕЦИЯ', '_blank')"></a-circle>
+        <a-circle class="clickable" position="0.22 0.36 0.01" radius="0.04" color="#FFD700" opacity="0.9" onclick="window.open('https://disk.yandex.ru/d/ССЫЛКА_ФИНЛЯНДИЯ', '_blank')"></a-circle>
+      </a-entity>
+
+      <!-- ========================================== -->
+      <!-- ФОТО 4: КАРИБЫ КРУПНО (При приближении)    -->
+      <!-- ========================================== -->
+      <a-entity mindar-image-target="targetIndex: 3">
+        <a-circle class="clickable" position="0.02 0.35 0.01" radius="0.035" color="#FFD700" opacity="0.9" onclick="window.open('https://disk.yandex.ru/d/ССЫЛКА_ДОМИНИКАНА', '_blank')"></a-circle>
+      </a-entity>
+
     </a-scene>
   </body>
 </html>
