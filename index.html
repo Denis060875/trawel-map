@@ -97,17 +97,51 @@
       <!-- ========================================== -->
       <!-- ФОТО 2 (targetIndex: 1): ЕВРОПА КРУПНО     -->
       <!-- ========================================== -->
+      <!-- ========================================== -->
+      <!-- ФОТО 2 (targetIndex: 1): ЕВРОПА КРУПНО     -->
+      <!-- ========================================== -->
       <a-entity mindar-image-target="targetIndex: 1">
-        <a-plane class="clickable" position="0.04 -0.15 0.01" width="0.06" height="0.04" material="src: #flag-it" onclick="window.open('https://disk.yandex.ru/d/ССЫЛКА_ИТАЛИЯ', '_blank')"></a-plane>
-        <a-plane class="clickable" position="-0.03 -0.21 0.01" width="0.04" height="0.027" material="src: #flag-it" onclick="window.open('https://disk.yandex.ru/d/ССЫЛКА_САРДИНИЯ', '_blank')"></a-plane>
-        <a-plane class="clickable" position="0.10 -0.11 0.01" width="0.05" height="0.033" material="src: #flag-hr" onclick="window.open('https://disk.yandex.ru/d/ССЫЛКА_ХОРВАТИЯ', '_blank')"></a-plane>
-        <a-plane class="clickable" position="-0.26 -0.22 0.01" width="0.07" height="0.046" material="src: #flag-es" onclick="window.open('https://disk.yandex.ru/d/ССЫЛКА_ИСПАНИЯ', '_blank')"></a-plane>
-        <a-plane class="clickable" position="-0.39 -0.22 0.01" width="0.05" height="0.033" material="src: #flag-pt" onclick="window.open('https://disk.yandex.ru/d/ССЫЛКА_ПОРТУГАЛИЯ', '_blank')"></a-plane>
-        <a-plane class="clickable" position="-0.02 0.05 0.01" width="0.065" height="0.043" material="src: #flag-de" onclick="window.open('https://disk.yandex.ru/d/ССЫЛКА_ГЕРМАНИЯ', '_blank')"></a-plane>
-        <a-plane class="clickable" position="0.15 0.07 0.01" width="0.065" height="0.043" material="src: #flag-pl" onclick="window.open('https://disk.yandex.ru/d/ССЫЛКА_ПОЛЬША', '_blank')"></a-plane>
-        <a-plane class="clickable" position="-0.02 0.18 0.01" width="0.05" height="0.033" material="src: #flag-dk" onclick="window.open('https://disk.yandex.ru/d/ССЫЛКА_ДАНИЯ', '_blank')"></a-plane>
-        <a-plane class="clickable" position="0.08 0.32 0.01" width="0.065" height="0.043" material="src: #flag-se" onclick="window.open('https://disk.yandex.ru/d/ССЫЛКА_ШВЕЦИЯ', '_blank')"></a-plane>
-        <a-plane class="clickable" position="0.22 0.36 0.01" width="0.065" height="0.043" material="src: #flag-fi" onclick="window.open('https://disk.yandex.ru/d/ССЫЛКА_ФИНЛЯНДИЯ', '_blank')"></a-plane>
+        
+        <!-- 1. ИТАЛИЯ (Сдвинута на сапог) -->
+        <a-plane class="clickable" position="-0.04 -0.16 0.01" width="0.045" height="0.03" material="src: #flag-it" 
+                 onclick="window.open('https://disk.yandex.ru/d/ССЫЛКА_ИТАЛИЯ', '_blank')"></a-plane>
+        
+        <!-- 2. САРДИНИЯ (Остров слева от сапога) -->
+        <a-plane class="clickable" position="-0.10 -0.19 0.01" width="0.03" height="0.02" material="src: #flag-it" 
+                 onclick="window.open('https://disk.yandex.ru/d/ССЫЛКА_САРДИНИЯ', '_blank')"></a-plane>
+        
+        <!-- 3. ХОРВАТИЯ (Балканы, правее Италии) -->
+        <a-plane class="clickable" position="0.03 -0.12 0.01" width="0.04" height="0.026" material="src: #flag-hr" 
+                 onclick="window.open('https://disk.yandex.ru/d/ССЫЛКА_ХОРВАТИЯ', '_blank')"></a-plane>
+        
+        <!-- 4. ИСПАНИЯ (Сдвинута вправо на Пиренейский п-ов) -->
+        <a-plane class="clickable" position="-0.20 -0.18 0.01" width="0.055" height="0.036" material="src: #flag-es" 
+                 onclick="window.open('https://disk.yandex.ru/d/ССЫЛКА_ИСПАНИЯ', '_blank')"></a-plane>
+        
+        <!-- 5. ПОРТУГАЛИЯ (Крайний запад Испании) -->
+        <a-plane class="clickable" position="-0.28 -0.18 0.01" width="0.038" height="0.025" material="src: #flag-pt" 
+                 onclick="window.open('https://disk.yandex.ru/d/ССЫЛКА_ПОРТУГАЛИЯ', '_blank')"></a-plane>
+        
+        <!-- 6. ГЕРМАНИЯ (Сдвинута влево и чуть вниз в центр Европы) -->
+        <a-plane class="clickable" position="-0.08 -0.01 0.01" width="0.048" height="0.032" material="src: #flag-de" 
+                 onclick="window.open('https://disk.yandex.ru/d/ССЫЛКА_ГЕРМАНИЯ', '_blank')"></a-plane>
+        
+        <!-- 7. ПОЛЬША (Правее Германии) -->
+        <a-plane class="clickable" position="0.04 0.01 0.01" width="0.048" height="0.032" material="src: #flag-pl" 
+                 onclick="window.open('https://disk.yandex.ru/d/ССЫЛКА_ПОЛЬША', '_blank')"></a-plane>
+        
+        <!-- 8. ДАНИЯ (Полуостров над Германией) -->
+        <a-plane class="clickable" position="-0.08 0.09 0.01" width="0.035" height="0.023" material="src: #flag-dk" 
+                 onclick="window.open('https://disk.yandex.ru/d/ССЫЛКА_ДАНИЯ', '_blank')"></a-plane>
+        
+        <!-- 9. ШВЕЦИЯ (Скандинавский п-ов) -->
+        <a-plane class="clickable" position="-0.01 0.22 0.01" width="0.05" height="0.033" material="src: #flag-se" 
+                 onclick="window.open('https://disk.yandex.ru/d/ССЫЛКА_ШВЕЦИЯ', '_blank')"></a-plane>
+        
+        <!-- 10. ФИНЛЯНДИЯ (Сдвинута левее на свое место) -->
+        <a-plane class="clickable" position="0.10 0.24 0.01" width="0.05" height="0.033" material="src: #flag-fi" 
+                 onclick="window.open('https://disk.yandex.ru/d/ССЫЛКА_ФИНЛЯНДИЯ', '_blank')"></a-plane>
+
       </a-entity>
 
       <!-- ========================================== -->
