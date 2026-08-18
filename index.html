@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta charset="utf-8" />
+    <title>Карта Путешествий AR</title>
+    <!-- Подключаем 3D-движок A-Frame и библиотеку MindAR -->
+    <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-aframe.prod.js"></script>
+    <style>
+      body { margin: 0; overflow: hidden; }
+      /* Инструкция на экране */
+      #hint {
+        position: absolute; top: 15px; left: 50%; transform: translateX(-50%);
+        background: rgba(0,0,0,0.7); color: #fff; padding: 10px 16px;
+        border-radius: 20px; font-family: sans-serif; font-size: 14px; z-index: 999;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="hint">Наведите камеру на карту и нажмите на страну</div>
+
+    <a-scene 
+      mindar-image="imageTargetSrc: ./targets.mind;" 
+      color-space="sRGB" 
+      renderer="colorManagement: true, physicallyCorrectLights" 
+      vr-mode-ui="enabled: false" 
+      device-orientation-permission-ui="enabled: false">
+      
+      <a-camera position="0 0 0" look-controls="enabled: false" cursor="fuse: false; rayOrigin: mouse;" raycaster="far: 10000; objects: .clickable"></a-camera>
+
+      <!-- Привязка к маркеру карты -->
+      <a-entity mindar-image-target="targetIndex: 0">
+        
+        <!-- ПРИМЕР 1: Метка для Италии -->
+        <a-plane class="clickable" 
+                 position="0.05 0.12 0.01" 
+                 scale="0.08 0.08 0.08" 
+                 color="#FFD700" 
+                 opacity="0.8"
+                 onclick="window.open('https://disk.yandex.ru/d/ССЫЛКА_НА_ИТАЛИЮ', '_blank')">
+        </a-plane>
+
+        <!-- ПРИМЕР 2: Метка для Таиланда -->
+        <a-plane class="clickable" 
+                 position="0.45 -0.05 0.01" 
+                 scale="0.08 0.08 0.08" 
+                 color="#FFD700" 
+                 opacity="0.8"
+                 onclick="window.open('https://disk.yandex.ru/d/ССЫЛКА_НА_ТАИЛАНД', '_blank')">
+        </a-plane>
+
+      </a-entity>
+    </a-scene>
+  </body>
+</html>
