@@ -38,7 +38,7 @@
     </style>
   </head>
   <body>
-    <div id="hint">✨ Наведите камеру на материк и нажмите на маркер</div>
+    <div id="hint">✨ Наведите камеру на материк и нажмите на кнопку</div>
 
     <!-- Всплывающее окно со странами -->
     <div id="modal">
@@ -53,6 +53,11 @@
       renderer="colorManagement: true, physicallyCorrectLights" 
       vr-mode-ui="enabled: false" 
       device-orientation-permission-ui="enabled: false">
+
+      <a-assets>
+        <canvas id="btn-europe" width="512" height="160"></canvas>
+        <canvas id="btn-caribbean" width="512" height="160"></canvas>
+      </a-assets>
       
       <a-camera position="0 0 0" look-controls="enabled: false" cursor="fuse: false; rayOrigin: mouse;" raycaster="far: 10000; objects: .clickable"></a-camera>
 
@@ -60,31 +65,51 @@
       <!-- ФОТО 2 (targetIndex: 1): ЕВРОПА            -->
       <!-- ========================================== -->
       <a-entity mindar-image-target="targetIndex: 1">
-        <!-- Крупная плашка Европа в центре кадра -->
-        <a-plane class="clickable" position="-0.15 -0.10 0.01" width="0.28" height="0.08" color="#111111" opacity="0.9"
-                 onclick="openMenu('europe')">
-          <a-text value="🌍 Страны Европы" align="center" color="#FFD700" width="1.2"></a-text>
-        </a-plane>
+        <a-plane class="clickable" position="-0.15 -0.10 0.01" width="0.30" height="0.09" material="src: #btn-europe; transparent: true;"
+                 onclick="openMenu('europe')"></a-plane>
       </a-entity>
 
       <!-- ========================================== -->
       <!-- ФОТО 4 (targetIndex: 3): КАРИБЫ            -->
       <!-- ========================================== -->
       <a-entity mindar-image-target="targetIndex: 3">
-        <!-- Крупная плашка Карибы -->
-        <a-plane class="clickable" position="0.0 0.0 0.01" width="0.32" height="0.08" color="#111111" opacity="0.9"
-                 onclick="openMenu('caribbean')">
-          <a-text value="🏝️ Карибы" align="center" color="#FFD700" width="1.2"></a-text>
-        </a-plane>
+        <a-plane class="clickable" position="0.0 0.0 0.01" width="0.30" height="0.09" material="src: #btn-caribbean; transparent: true;"
+                 onclick="openMenu('caribbean')"></a-plane>
       </a-entity>
 
     </a-scene>
 
     <script>
-      // Ссылки на ваши фотоальбомы по регионам
+      // Генерация четких плашек с кириллицей
+      function drawButton(canvasId, text) {
+        const canvas = document.getElementById(canvasId);
+        const ctx = canvas.getContext('2d');
+        
+        // Фон плашки
+        ctx.fillStyle = "rgba(15, 15, 15, 0.92)";
+        ctx.roundRect(10, 10, 492, 140, 30);
+        ctx.fill();
+
+        // Золотая рамка
+        ctx.lineWidth = 6;
+        ctx.strokeStyle = "#FFD700";
+        ctx.stroke();
+
+        // Текст
+        ctx.fillStyle = "#FFFFFF";
+        ctx.font = "bold 44px sans-serif";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(text, 256, 80);
+      }
+
+      drawButton('btn-europe', '🇪🇺 Европа');
+      drawButton('btn-caribbean', '🏝️ Карибы');
+
+      // Данные альбомов
       const data = {
         europe: {
-          title: "🌍 Путешествия по Европе",
+          title: "🇪🇺 Путешествия по Европе",
           countries: [
             { name: "🇮🇹 Италия", url: "https://disk.yandex.ru/d/ССЫЛКА_ИТАЛИЯ" },
             { name: "🏝️ Остров Сардиния", url: "https://disk.yandex.ru/d/ССЫЛКА_САРДИНИЯ" },
