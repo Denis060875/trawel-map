@@ -32,22 +32,107 @@
       <!-- Привязка к маркеру карты -->
       <a-entity mindar-image-target="targetIndex: 0">
         
-        <!-- ПРИМЕР 1: Метка для Италии -->
+        <!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta charset="utf-8" />
+    <title>Карта Путешествий AR</title>
+    <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-aframe.prod.js"></script>
+    <style>
+      body { margin: 0; overflow: hidden; }
+      #hint {
+        position: absolute; top: 15px; left: 50%; transform: translateX(-50%);
+        background: rgba(0,0,0,0.75); color: #fff; padding: 10px 18px;
+        border-radius: 20px; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        font-size: 13px; z-index: 999; text-align: center; pointer-events: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="hint">Наведите на карту и нажмите на страну для фото</div>
+
+    <a-scene 
+      mindar-image="imageTargetSrc: ./targets.mind;" 
+      color-space="sRGB" 
+      renderer="colorManagement: true, physicallyCorrectLights" 
+      vr-mode-ui="enabled: false" 
+      device-orientation-permission-ui="enabled: false">
+      
+      <a-camera position="0 0 0" look-controls="enabled: false" cursor="fuse: false; rayOrigin: mouse;" raycaster="far: 10000; objects: .clickable"></a-camera>
+
+      <a-entity mindar-image-target="targetIndex: 0">
+        
+        <!-- 1. ТУРЦИЯ -->
         <a-plane class="clickable" 
-                 position="0.05 0.12 0.01" 
-                 scale="0.08 0.08 0.08" 
+                 position="0.12 0.08 0.01" 
+                 scale="0.05 0.05 0.05" 
                  color="#FFD700" 
-                 opacity="0.8"
-                 onclick="window.open('https://disk.yandex.ru/d/ССЫЛКА_НА_ИТАЛИЮ', '_blank')">
+                 opacity="0.85"
+                 onclick="window.open('https://disk.yandex.ru/d/ВАША_ССЫЛКА_ТУРЦИЯ', '_blank')">
         </a-plane>
 
-        <!-- ПРИМЕР 2: Метка для Таиланда -->
+        <!-- 2. ИТАЛИЯ -->
         <a-plane class="clickable" 
-                 position="0.45 -0.05 0.01" 
+                 position="0.05 0.11 0.01" 
+                 scale="0.04 0.04 0.04" 
+                 color="#FFD700" 
+                 opacity="0.85"
+                 onclick="window.open('https://disk.yandex.ru/d/ВАША_ССЫЛКА_ИТАЛИЯ', '_blank')">
+        </a-plane>
+
+        <!-- 3. ФРАНЦИЯ / ИСПАНИЯ -->
+        <a-plane class="clickable" 
+                 position="0.01 0.10 0.01" 
+                 scale="0.05 0.05 0.05" 
+                 color="#FFD700" 
+                 opacity="0.85"
+                 onclick="window.open('https://disk.yandex.ru/d/ВАША_ССЫЛКА_ИСПАНИЯ', '_blank')">
+        </a-plane>
+
+        <!-- 4. ОАЭ / ДУБАЙ -->
+        <a-plane class="clickable" 
+                 position="0.18 0.04 0.01" 
+                 scale="0.04 0.04 0.04" 
+                 color="#FFD700" 
+                 opacity="0.85"
+                 onclick="window.open('https://disk.yandex.ru/d/ВАША_ССЫЛКА_ОАЭ', '_blank')">
+        </a-plane>
+
+        <!-- 5. ТАИЛАНД -->
+        <a-plane class="clickable" 
+                 position="0.38 0.01 0.01" 
+                 scale="0.04 0.04 0.04" 
+                 color="#FFD700" 
+                 opacity="0.85"
+                 onclick="window.open('https://disk.yandex.ru/d/ВАША_ССЫЛКА_ТАИЛАНД', '_blank')">
+        </a-plane>
+
+        <!-- 6. ЕГИПЕТ -->
+        <a-plane class="clickable" 
+                 position="0.10 0.04 0.01" 
+                 scale="0.04 0.04 0.04" 
+                 color="#FFD700" 
+                 opacity="0.85"
+                 onclick="window.open('https://disk.yandex.ru/d/ВАША_ССЫЛКА_ЕГИПЕТ', '_blank')">
+        </a-plane>
+
+        <!-- 7. США -->
+        <a-plane class="clickable" 
+                 position="-0.33 0.11 0.01" 
                  scale="0.08 0.08 0.08" 
                  color="#FFD700" 
-                 opacity="0.8"
-                 onclick="window.open('https://disk.yandex.ru/d/ССЫЛКА_НА_ТАИЛАНД', '_blank')">
+                 opacity="0.85"
+                 onclick="window.open('https://disk.yandex.ru/d/ВАША_ССЫЛКА_США', '_blank')">
+        </a-plane>
+
+        <!-- Чтобы добавить еще одну страну, просто скопируйте блок <a-plane> выше и измените position и ссылку -->
+
+      </a-entity>
+    </a-scene>
+  </body>
+</html>
         </a-plane>
 
       </a-entity>
