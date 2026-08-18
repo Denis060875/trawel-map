@@ -3,7 +3,7 @@
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta charset="utf-8" />
-    <title>Карта Путешествий AR</title>
+    <title>Travel Map AR</title>
     <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-aframe.prod.js"></script>
     <style>
@@ -38,13 +38,13 @@
     </style>
   </head>
   <body>
-    <div id="hint">✨ Наведите камеру на материк и нажмите на кнопку</div>
+    <div id="hint">✨ Point camera at a continent and tap the button</div>
 
     <!-- Всплывающее окно со странами -->
     <div id="modal">
-      <h3 id="modal-title">Выберите страну</h3>
+      <h3 id="modal-title">Select Country</h3>
       <div id="modal-links"></div>
-      <button class="close-btn" onclick="closeModal()">Закрыть ✕</button>
+      <button class="close-btn" onclick="closeModal()">Close ✕</button>
     </div>
 
     <a-scene 
@@ -57,12 +57,15 @@
       <a-assets>
         <canvas id="btn-europe" width="512" height="160"></canvas>
         <canvas id="btn-caribbean" width="512" height="160"></canvas>
+        <canvas id="btn-north-america" width="512" height="160"></canvas>
+        <canvas id="btn-africa" width="512" height="160"></canvas>
+        <canvas id="btn-asia" width="512" height="160"></canvas>
       </a-assets>
       
       <a-camera position="0 0 0" look-controls="enabled: false" cursor="fuse: false; rayOrigin: mouse;" raycaster="far: 10000; objects: .clickable"></a-camera>
 
       <!-- ========================================== -->
-      <!-- ФОТО 2 (targetIndex: 1): ЕВРОПА            -->
+      <!-- ФОТО 2 (targetIndex: 1): EUROPE            -->
       <!-- ========================================== -->
       <a-entity mindar-image-target="targetIndex: 1">
         <a-plane class="clickable" position="-0.15 -0.10 0.01" width="0.30" height="0.09" material="src: #btn-europe; transparent: true;"
@@ -70,32 +73,57 @@
       </a-entity>
 
       <!-- ========================================== -->
-      <!-- ФОТО 4 (targetIndex: 3): КАРИБЫ            -->
+      <!-- ФОТО 3 (targetIndex: 2): NORTH AMERICA     -->
+      <!-- ========================================== -->
+      <a-entity mindar-image-target="targetIndex: 2">
+        <a-plane class="clickable" position="0.0 0.0 0.01" width="0.34" height="0.09" material="src: #btn-north-america; transparent: true;"
+                 onclick="openMenu('northAmerica')"></a-plane>
+      </a-entity>
+
+      <!-- ========================================== -->
+      <!-- ФОТО 4 (targetIndex: 3): CARIBBEAN         -->
       <!-- ========================================== -->
       <a-entity mindar-image-target="targetIndex: 3">
         <a-plane class="clickable" position="0.0 0.0 0.01" width="0.30" height="0.09" material="src: #btn-caribbean; transparent: true;"
                  onclick="openMenu('caribbean')"></a-plane>
       </a-entity>
 
+      <!-- ========================================== -->
+      <!-- ФОТО 5 (targetIndex: 4): AFRICA & GULF     -->
+      <!-- ========================================== -->
+      <a-entity mindar-image-target="targetIndex: 4">
+        <a-plane class="clickable" position="0.0 0.0 0.01" width="0.30" height="0.09" material="src: #btn-africa; transparent: true;"
+                 onclick="openMenu('africa')"></a-plane>
+      </a-entity>
+
+      <!-- ========================================== -->
+      <!-- ФОТО 6 (targetIndex: 5): ASIA & OCEANIA    -->
+      <!-- ========================================== -->
+      <a-entity mindar-image-target="targetIndex: 5">
+        <a-plane class="clickable" position="0.0 0.0 0.01" width="0.30" height="0.09" material="src: #btn-asia; transparent: true;"
+                 onclick="openMenu('asia')"></a-plane>
+      </a-entity>
+
     </a-scene>
 
     <script>
-      // Генерация четких плашек с кириллицей
+      // Отрисовка стильных плашек с английскими названиями
       function drawButton(canvasId, text) {
         const canvas = document.getElementById(canvasId);
+        if (!canvas) return;
         const ctx = canvas.getContext('2d');
         
-        // Фон плашки
+        // Темный полупрозрачный фон
         ctx.fillStyle = "rgba(15, 15, 15, 0.92)";
         ctx.roundRect(10, 10, 492, 140, 30);
         ctx.fill();
 
-        // Золотая рамка
+        // Золотая элегантная рамка
         ctx.lineWidth = 6;
         ctx.strokeStyle = "#FFD700";
         ctx.stroke();
 
-        // Текст
+        // Текст кнопки
         ctx.fillStyle = "#FFFFFF";
         ctx.font = "bold 44px sans-serif";
         ctx.textAlign = "center";
@@ -103,30 +131,51 @@
         ctx.fillText(text, 256, 80);
       }
 
-      drawButton('btn-europe', '🇪🇺 Европа');
-      drawButton('btn-caribbean', '🏝️ Карибы');
+      drawButton('btn-europe', '🇪🇺 Europe');
+      drawButton('btn-caribbean', '🏝️ Caribbean');
+      drawButton('btn-north-america', '🗽 North America');
+      drawButton('btn-africa', '🌍 Africa & Gulf');
+      drawButton('btn-asia', '⛩️ Asia & Oceania');
 
       // Данные альбомов
       const data = {
         europe: {
-          title: "🇪🇺 Путешествия по Европе",
+          title: "🇪🇺 Europe Travels",
           countries: [
-            { name: "🇮🇹 Италия", url: "https://disk.yandex.ru/d/ССЫЛКА_ИТАЛИЯ" },
-            { name: "🏝️ Остров Сардиния", url: "https://disk.yandex.ru/d/ССЫЛКА_САРДИНИЯ" },
-            { name: "🇭🇷 Хорватия", url: "https://disk.yandex.ru/d/ССЫЛКА_ХОРВАТИЯ" },
-            { name: "🇪🇸 Испания", url: "https://disk.yandex.ru/d/ССЫЛКА_ИСПАНИЯ" },
-            { name: "🇵🇹 Португалия", url: "https://disk.yandex.ru/d/ССЫЛКА_ПОРТУГАЛИЯ" },
-            { name: "🇩🇪 Германия", url: "https://disk.yandex.ru/d/ССЫЛКА_ГЕРМАНИЯ" },
-            { name: "🇵🇱 Польша", url: "https://disk.yandex.ru/d/ССЫЛКА_ПОЛЬША" },
-            { name: "🇩🇰 Дания", url: "https://disk.yandex.ru/d/ССЫЛКА_ДАНИЯ" },
-            { name: "🇸🇪 Швеция", url: "https://disk.yandex.ru/d/ССЫЛКА_ШВЕЦИЯ" },
-            { name: "🇫🇮 Финляндия", url: "https://disk.yandex.ru/d/ССЫЛКА_ФИНЛЯНДИЯ" }
+            { name: "🇮🇹 Italy", url: "https://disk.yandex.ru/d/ССЫЛКА_ИТАЛИЯ" },
+            { name: "🏝️ Sardinia", url: "https://disk.yandex.ru/d/ССЫЛКА_САРДИНИЯ" },
+            { name: "🇭🇷 Croatia", url: "https://disk.yandex.ru/d/ССЫЛКА_ХОРВАТИЯ" },
+            { name: "🇪🇸 Spain", url: "https://disk.yandex.ru/d/ССЫЛКА_ИСПАНИЯ" },
+            { name: "🇵🇹 Portugal", url: "https://disk.yandex.ru/d/ССЫЛКА_ПОРТУГАЛИЯ" },
+            { name: "🇩🇪 Germany", url: "https://disk.yandex.ru/d/ССЫЛКА_ГЕРМАНИЯ" },
+            { name: "🇵🇱 Poland", url: "https://disk.yandex.ru/d/ССЫЛКА_ПОЛЬША" },
+            { name: "🇩🇰 Denmark", url: "https://disk.yandex.ru/d/ССЫЛКА_ДАНИЯ" },
+            { name: "🇸🇪 Sweden", url: "https://disk.yandex.ru/d/ССЫЛКА_ШВЕЦИЯ" },
+            { name: "🇫🇮 Finland", url: "https://disk.yandex.ru/d/ССЫЛКА_ФИНЛЯНДИЯ" }
           ]
         },
         caribbean: {
-          title: "🏝️ Карибский бассейн",
+          title: "🏝️ Caribbean",
           countries: [
-            { name: "🇩🇴 Доминиканская Республика", url: "https://disk.yandex.ru/d/ССЫЛКА_ДОМИНИКАНА" }
+            { name: "🇩🇴 Dominican Republic", url: "https://disk.yandex.ru/d/ССЫЛКА_ДОМИНИКАНА" }
+          ]
+        },
+        northAmerica: {
+          title: "🗽 North America",
+          countries: [
+            { name: "🇺🇸 United States", url: "https://disk.yandex.ru/d/ССЫЛКА_США" }
+          ]
+        },
+        africa: {
+          title: "🌍 Africa & Gulf",
+          countries: [
+            { name: "🇦🇪 UAE / Dubai", url: "https://disk.yandex.ru/d/ССЫЛКА_ОАЭ" }
+          ]
+        },
+        asia: {
+          title: "⛩️ Asia & Oceania",
+          countries: [
+            { name: "🇹🇭 Thailand", url: "https://disk.yandex.ru/d/ССЫЛКА_ТАИЛАНД" }
           ]
         }
       };
