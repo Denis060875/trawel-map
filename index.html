@@ -1,164 +1,4 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-    <meta charset="utf-8" />
-    <title>Travel Map AR</title>
-
-    <link rel="manifest" href="./manifest.json">
-    <meta name="theme-color" content="#0d0e12">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Travel Map">
-    <link rel="apple-touch-icon" href="./icon.png">
-
-    <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-aframe.prod.js"></script>
-    
-    <style>
-      * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-      body { margin: 0; overflow: hidden; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: #000; }
-      
-      #hint {
-        position: absolute; top: 20px; left: 50%; transform: translateX(-50%);
-        background: rgba(18, 20, 29, 0.85); color: #fff; padding: 10px 22px;
-        border-radius: 30px; font-size: 13px; font-weight: 500; z-index: 10; pointer-events: none;
-        border: 1px solid rgba(255, 215, 0, 0.4); text-align: center; white-space: nowrap;
-      }
-
-      #modal-overlay {
-        display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.75);
-        backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
-        z-index: 999;
-      }
-
-      #modal {
-        display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-        background: rgba(24, 26, 36, 0.95);
-        border: 1px solid rgba(255, 215, 0, 0.4); border-radius: 20px;
-        padding: 20px; width: 88%; max-width: 340px; max-height: 80vh;
-        z-index: 1000; box-shadow: 0 15px 40px rgba(0,0,0,0.8);
-        flex-direction: column;
-      }
-
-      #modal h3 {
-        margin: 0 0 14px 0; font-size: 19px; font-weight: 700; text-align: center; color: #FFD700;
-      }
-
-      #modal-links {
-        overflow-y: auto; display: flex; flex-direction: column; gap: 8px; max-height: 55vh;
-      }
-
-      .country-btn {
-        display: flex; align-items: center; justify-content: space-between;
-        padding: 12px 14px; background: rgba(255, 255, 255, 0.07); color: #fff;
-        border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 12px;
-        font-size: 15px; cursor: pointer; user-select: none;
-      }
-      .country-btn:active { background: rgba(255, 215, 0, 0.25); border-color: #FFD700; }
-      .country-btn .left-box { display: flex; align-items: center; gap: 10px; }
-      .country-btn img { width: 22px; height: 15px; object-fit: cover; border-radius: 2px; }
-
-      .close-btn {
-        margin-top: 14px; padding: 10px; background: rgba(255, 255, 255, 0.1);
-        color: #ddd; border: none; border-radius: 10px; font-size: 14px; cursor: pointer;
-      }
-
-      /* Окно фотогалереи */
-      #gallery-box {
-        display: none; position: fixed; inset: 0; z-index: 2000;
-        background: #050505; flex-direction: column; justify-content: space-between;
-        align-items: center; padding: env(safe-area-inset-top, 20px) 16px env(safe-area-inset-bottom, 30px);
-      }
-      .g-header {
-        width: 100%; display: flex; justify-content: space-between; align-items: center;
-        color: #fff; font-size: 16px; font-weight: 600; padding: 10px 0;
-      }
-      .g-close {
-        background: rgba(255,255,255,0.2); border: none; color: #fff;
-        font-size: 16px; width: 34px; height: 34px; border-radius: 50%; cursor: pointer;
-      }
-      .g-body {
-        flex: 1; width: 100%; display: flex; justify-content: center; align-items: center; position: relative;
-      }
-      #g-image {
-        max-width: 100%; max-height: 70vh; object-fit: contain; border-radius: 8px;
-      }
-      .g-nav {
-        position: absolute; top: 50%; transform: translateY(-50%);
-        background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.2);
-        color: #FFD700; font-size: 26px; width: 44px; height: 44px; border-radius: 50%;
-        display: flex; justify-content: center; align-items: center; cursor: pointer;
-      }
-      .g-prev { left: 5px; }
-      .g-next { right: 5px; }
-      #g-status { color: #FFD700; font-size: 15px; position: absolute; text-align: center; }
-    </style>
-  </head>
-  <body>
-    <div id="hint">Наведите камеру на карту и коснитесь метки</div>
-
-    <div id="modal-overlay" onclick="closeModal()"></div>
-
-    <div id="modal">
-      <h3 id="modal-title">Страны</h3>
-      <div id="modal-links"></div>
-      <button class="close-btn" onclick="closeModal()">Закрыть</button>
-    </div>
-
-    <div id="gallery-box">
-      <div class="g-header">
-        <span id="g-title">Страна</span>
-        <span id="g-count" style="color:#FFD700;">1 / 1</span>
-        <button class="g-close" onclick="closeGallery()">✕</button>
-      </div>
-      <div class="g-body">
-        <div id="g-status">Загрузка фото...</div>
-        <img id="g-image" src="" style="display:none;" />
-        <div class="g-nav g-prev" onclick="prevPhoto()">‹</div>
-        <div class="g-nav g-next" onclick="nextPhoto()">›</div>
-      </div>
-    </div>
-
-    <a-scene 
-      mindar-image="imageTargetSrc: ./targets.mind; maxTrack: 2;" 
-      color-space="sRGB" 
-      renderer="colorManagement: true, physicallyCorrectLights" 
-      vr-mode-ui="enabled: false" 
-      device-orientation-permission-ui="enabled: false">
-
-      <a-assets>
-        <canvas id="btn-europe" width="600" height="170"></canvas>
-        <canvas id="btn-north-america" width="760" height="170"></canvas>
-        <canvas id="btn-south-america" width="760" height="170"></canvas>
-        <canvas id="btn-africa" width="700" height="170"></canvas>
-        <canvas id="btn-asia" width="780" height="170"></canvas>
-      </a-assets>
-      
-      <a-camera position="0 0 0" look-controls="enabled: false" cursor="fuse: false; rayOrigin: mouse;" raycaster="far: 10000; objects: .clickable"></a-camera>
-
-      <a-entity mindar-image-target="targetIndex: 1">
-        <a-plane class="clickable" position="-0.15 -0.06 0.01" width="0.26" height="0.075" material="src: #btn-europe; transparent: true;" onclick="openMenu('europe')"></a-plane>
-      </a-entity>
-
-      <a-entity mindar-image-target="targetIndex: 2">
-        <a-plane class="clickable" position="0.0 0.0 0.01" width="0.33" height="0.075" material="src: #btn-north-america; transparent: true;" onclick="openMenu('northAmerica')"></a-plane>
-      </a-entity>
-
-      <a-entity mindar-image-target="targetIndex: 3">
-        <a-plane class="clickable" position="0.0 0.05 0.01" width="0.33" height="0.075" material="src: #btn-south-america; transparent: true;" onclick="openMenu('southAmerica')"></a-plane>
-      </a-entity>
-
-      <a-entity mindar-image-target="targetIndex: 4">
-        <a-plane class="clickable" position="0.0 0.0 0.01" width="0.30" height="0.075" material="src: #btn-africa; transparent: true;" onclick="openMenu('africa')"></a-plane>
-      </a-entity>
-
-      <a-entity mindar-image-target="targetIndex: 5">
-        <a-plane class="clickable" position="0.0 0.0 0.01" width="0.34" height="0.075" material="src: #btn-asia; transparent: true;" onclick="openMenu('asia')"></a-plane>
-      </a-entity>
-    </a-scene>
-
-    <script>
+<script>
       function drawButton(canvasId, title, width) {
         const canvas = document.getElementById(canvasId);
         if (!canvas) return;
@@ -277,13 +117,19 @@
         currentPhotos = [];
 
         try {
-          const res = await fetch(`https://cloud-api.yandex.net/v1/disk/public/resources?public_key=${encodeURIComponent(diskUrl)}&limit=100`);
+          // Запрашиваем превью высокого разрешения (preview_size=XXL / 1280px)
+          const res = await fetch(`https://cloud-api.yandex.net/v1/disk/public/resources?public_key=${encodeURIComponent(diskUrl)}&limit=100&preview_size=XXL&preview_crop=false`);
           const json = await res.json();
 
           if (json._embedded && json._embedded.items) {
             currentPhotos = json._embedded.items
               .filter(f => f.mime_type && f.mime_type.startsWith('image/'))
-              .map(f => f.file);
+              .map(f => {
+                // Если есть готовый превью-URL без авторизации — берем его, иначе прямую ссылку
+                return f.sizes && f.sizes.length > 0 
+                  ? f.sizes[f.sizes.length - 1].url 
+                  : (f.preview || f.file);
+              });
           }
 
           if (currentPhotos.length > 0) {
@@ -304,6 +150,7 @@
 
         status.style.display = 'none';
         img.style.display = 'block';
+        img.crossOrigin = "anonymous";
         img.src = currentPhotos[idx];
         count.innerText = `${idx + 1} / ${currentPhotos.length}`;
       }
@@ -324,5 +171,3 @@
         document.getElementById('gallery-box').style.display = 'none';
       }
     </script>
-  </body>
-</html>
