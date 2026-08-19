@@ -5,7 +5,6 @@
     <meta charset="utf-8" />
     <title>Travel Map AR</title>
 
-    <!-- PWA Settings -->
     <link rel="manifest" href="./manifest.json">
     <meta name="theme-color" content="#0d0e12">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -18,127 +17,106 @@
     
     <style>
       * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-      body { margin: 0; overflow: hidden; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif; background-color: #000; }
+      body { margin: 0; overflow: hidden; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: #000; }
       
       #hint {
         position: absolute; top: 20px; left: 50%; transform: translateX(-50%);
-        background: rgba(18, 20, 29, 0.75); color: #fff; padding: 10px 22px;
+        background: rgba(18, 20, 29, 0.85); color: #fff; padding: 10px 22px;
         border-radius: 30px; font-size: 13px; font-weight: 500; z-index: 10; pointer-events: none;
-        backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
-        border: 1px solid rgba(255, 215, 0, 0.3); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.37);
-        text-align: center; white-space: nowrap;
+        border: 1px solid rgba(255, 215, 0, 0.4); text-align: center; white-space: nowrap;
       }
 
-      /* Оверлей меню и галереи */
       #modal-overlay {
         display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.75);
-        backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-        z-index: 999; opacity: 0; transition: opacity 0.3s ease;
+        backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+        z-index: 999;
       }
-      #modal-overlay.active { opacity: 1; }
 
-      /* Список стран */
       #modal {
-        position: fixed; top: 50%; left: 50%; transform: translate(-50%, -45%) scale(0.95);
-        background: linear-gradient(135deg, rgba(28, 30, 41, 0.92) 0%, rgba(15, 16, 22, 0.97) 100%);
-        backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
-        border: 1px solid rgba(255, 215, 0, 0.35); border-radius: 24px;
-        padding: 24px 20px 18px; width: 88%; max-width: 360px; max-height: 80vh;
-        z-index: 1000; box-shadow: 0 20px 50px rgba(0,0,0,0.8);
-        display: flex; flex-direction: column; opacity: 0; pointer-events: none;
-        transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+        background: rgba(24, 26, 36, 0.95);
+        border: 1px solid rgba(255, 215, 0, 0.4); border-radius: 20px;
+        padding: 20px; width: 88%; max-width: 340px; max-height: 80vh;
+        z-index: 1000; box-shadow: 0 15px 40px rgba(0,0,0,0.8);
+        flex-direction: column;
       }
-      #modal.active { opacity: 1; pointer-events: auto; transform: translate(-50%, -50%) scale(1); }
 
       #modal h3 {
-        margin: 0 0 16px 0; font-size: 20px; font-weight: 700; text-align: center;
-        background: linear-gradient(135deg, #FFF6D1 0%, #FFD700 100%);
-        -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        margin: 0 0 14px 0; font-size: 19px; font-weight: 700; text-align: center; color: #FFD700;
       }
 
       #modal-links {
-        overflow-y: auto; padding-right: 4px; display: flex; flex-direction: column; gap: 10px;
+        overflow-y: auto; display: flex; flex-direction: column; gap: 8px; max-height: 55vh;
       }
 
       .country-btn {
         display: flex; align-items: center; justify-content: space-between;
-        padding: 12px 16px; background: rgba(255, 255, 255, 0.06); color: #fff;
-        border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 14px;
-        font-size: 15px; font-weight: 500; cursor: pointer; transition: all 0.2s ease;
+        padding: 12px 14px; background: rgba(255, 255, 255, 0.07); color: #fff;
+        border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 12px;
+        font-size: 15px; cursor: pointer; user-select: none;
       }
-      .country-btn .left-content { display: flex; align-items: center; gap: 12px; }
-      .country-btn .flag-img { width: 24px; height: 16px; object-fit: cover; border-radius: 3px; }
-      .country-btn:active { transform: scale(0.97); background: rgba(255, 215, 0, 0.2); }
+      .country-btn:active { background: rgba(255, 215, 0, 0.25); border-color: #FFD700; }
+      .country-btn .left-box { display: flex; align-items: center; gap: 10px; }
+      .country-btn img { width: 22px; height: 15px; object-fit: cover; border-radius: 2px; }
 
       .close-btn {
-        margin-top: 16px; padding: 12px; background: rgba(255, 255, 255, 0.08);
-        color: #aaa; border: none; border-radius: 14px; font-size: 14px; font-weight: 600;
-        cursor: pointer;
+        margin-top: 14px; padding: 10px; background: rgba(255, 255, 255, 0.1);
+        color: #ddd; border: none; border-radius: 10px; font-size: 14px; cursor: pointer;
       }
 
-      /* Полноэкранная галерея фото */
-      #gallery-viewer {
+      /* Окно фотогалереи */
+      #gallery-box {
         display: none; position: fixed; inset: 0; z-index: 2000;
-        background: #000; flex-direction: column; justify-content: space-between;
-        align-items: center; padding: 20px 10px 40px; box-sizing: border-box;
+        background: #050505; flex-direction: column; justify-content: space-between;
+        align-items: center; padding: env(safe-area-inset-top, 20px) 16px env(safe-area-inset-bottom, 30px);
       }
-      #gallery-viewer.active { display: flex; }
-
-      .gallery-topbar {
+      .g-header {
         width: 100%; display: flex; justify-content: space-between; align-items: center;
-        color: #fff; padding: 0 10px; font-size: 16px; font-weight: 600;
+        color: #fff; font-size: 16px; font-weight: 600; padding: 10px 0;
       }
-      .gallery-close {
+      .g-close {
         background: rgba(255,255,255,0.2); border: none; color: #fff;
-        font-size: 18px; width: 36px; height: 36px; border-radius: 50%; cursor: pointer;
+        font-size: 16px; width: 34px; height: 34px; border-radius: 50%; cursor: pointer;
       }
-
-      .gallery-main {
+      .g-body {
         flex: 1; width: 100%; display: flex; justify-content: center; align-items: center; position: relative;
       }
-      #gallery-img {
-        max-width: 100%; max-height: 75vh; object-fit: contain; border-radius: 8px;
-        box-shadow: 0 5px 25px rgba(0,0,0,0.8); transition: opacity 0.2s;
+      #g-image {
+        max-width: 100%; max-height: 70vh; object-fit: contain; border-radius: 8px;
       }
-
-      .gallery-nav {
+      .g-nav {
         position: absolute; top: 50%; transform: translateY(-50%);
-        background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.2);
-        color: #fff; font-size: 24px; width: 44px; height: 44px; border-radius: 50%;
+        background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.2);
+        color: #FFD700; font-size: 26px; width: 44px; height: 44px; border-radius: 50%;
         display: flex; justify-content: center; align-items: center; cursor: pointer;
       }
-      .gallery-prev { left: 10px; }
-      .gallery-next { right: 10px; }
-
-      #gallery-loader {
-        color: #FFD700; font-size: 16px; position: absolute;
-      }
+      .g-prev { left: 5px; }
+      .g-next { right: 5px; }
+      #g-status { color: #FFD700; font-size: 15px; position: absolute; text-align: center; }
     </style>
   </head>
   <body>
-    <div id="hint">✨ Наведите камеру на карту и коснитесь метки</div>
+    <div id="hint">Наведите камеру на карту и коснитесь метки</div>
 
     <div id="modal-overlay" onclick="closeModal()"></div>
 
-    <!-- Меню стран -->
     <div id="modal">
-      <h3 id="modal-title">Select Country</h3>
+      <h3 id="modal-title">Страны</h3>
       <div id="modal-links"></div>
-      <button class="close-btn" onclick="closeModal()">Закрыть ✕</button>
+      <button class="close-btn" onclick="closeModal()">Закрыть</button>
     </div>
 
-    <!-- Встроенная галерея -->
-    <div id="gallery-viewer">
-      <div class="gallery-topbar">
-        <span id="gallery-title">Photos</span>
-        <span id="gallery-counter">1 / 1</span>
-        <button class="gallery-close" onclick="closeGallery()">✕</button>
+    <div id="gallery-box">
+      <div class="g-header">
+        <span id="g-title">Страна</span>
+        <span id="g-count" style="color:#FFD700;">1 / 1</span>
+        <button class="g-close" onclick="closeGallery()">✕</button>
       </div>
-      <div class="gallery-main">
-        <div id="gallery-loader">Загрузка фото...</div>
-        <img id="gallery-img" src="" style="display:none;" />
-        <div class="gallery-nav gallery-prev" onclick="prevPhoto()">‹</div>
-        <div class="gallery-nav gallery-next" onclick="nextPhoto()">›</div>
+      <div class="g-body">
+        <div id="g-status">Загрузка фото...</div>
+        <img id="g-image" src="" style="display:none;" />
+        <div class="g-nav g-prev" onclick="prevPhoto()">‹</div>
+        <div class="g-nav g-next" onclick="nextPhoto()">›</div>
       </div>
     </div>
 
@@ -159,36 +137,25 @@
       
       <a-camera position="0 0 0" look-controls="enabled: false" cursor="fuse: false; rayOrigin: mouse;" raycaster="far: 10000; objects: .clickable"></a-camera>
 
-      <!-- 1: EUROPE -->
       <a-entity mindar-image-target="targetIndex: 1">
-        <a-plane class="clickable" position="-0.15 -0.06 0.01" width="0.26" height="0.075" material="src: #btn-europe; transparent: true;"
-                 onclick="openMenu('europe')"></a-plane>
+        <a-plane class="clickable" position="-0.15 -0.06 0.01" width="0.26" height="0.075" material="src: #btn-europe; transparent: true;" onclick="openMenu('europe')"></a-plane>
       </a-entity>
 
-      <!-- 2: NORTH AMERICA -->
       <a-entity mindar-image-target="targetIndex: 2">
-        <a-plane class="clickable" position="0.0 0.0 0.01" width="0.33" height="0.075" material="src: #btn-north-america; transparent: true;"
-                 onclick="openMenu('northAmerica')"></a-plane>
+        <a-plane class="clickable" position="0.0 0.0 0.01" width="0.33" height="0.075" material="src: #btn-north-america; transparent: true;" onclick="openMenu('northAmerica')"></a-plane>
       </a-entity>
 
-      <!-- 3: SOUTH AMERICA -->
       <a-entity mindar-image-target="targetIndex: 3">
-        <a-plane class="clickable" position="0.0 0.05 0.01" width="0.33" height="0.075" material="src: #btn-south-america; transparent: true;"
-                 onclick="openMenu('southAmerica')"></a-plane>
+        <a-plane class="clickable" position="0.0 0.05 0.01" width="0.33" height="0.075" material="src: #btn-south-america; transparent: true;" onclick="openMenu('southAmerica')"></a-plane>
       </a-entity>
 
-      <!-- 4: AFRICA & GULF -->
       <a-entity mindar-image-target="targetIndex: 4">
-        <a-plane class="clickable" position="0.0 0.0 0.01" width="0.30" height="0.075" material="src: #btn-africa; transparent: true;"
-                 onclick="openMenu('africa')"></a-plane>
+        <a-plane class="clickable" position="0.0 0.0 0.01" width="0.30" height="0.075" material="src: #btn-africa; transparent: true;" onclick="openMenu('africa')"></a-plane>
       </a-entity>
 
-      <!-- 5: ASIA & OCEANIA -->
       <a-entity mindar-image-target="targetIndex: 5">
-        <a-plane class="clickable" position="0.0 0.0 0.01" width="0.34" height="0.075" material="src: #btn-asia; transparent: true;"
-                 onclick="openMenu('asia')"></a-plane>
+        <a-plane class="clickable" position="0.0 0.0 0.01" width="0.34" height="0.075" material="src: #btn-asia; transparent: true;" onclick="openMenu('asia')"></a-plane>
       </a-entity>
-
     </a-scene>
 
     <script>
@@ -196,32 +163,18 @@
         const canvas = document.getElementById(canvasId);
         if (!canvas) return;
         const ctx = canvas.getContext('2d');
-        const height = 170;
-        
-        ctx.clearRect(0, 0, width, height);
-
-        const bgGrad = ctx.createLinearGradient(0, 0, width, height);
-        bgGrad.addColorStop(0, "rgba(22, 24, 35, 0.95)");
-        bgGrad.addColorStop(1, "rgba(10, 11, 16, 0.98)");
-        
-        ctx.fillStyle = bgGrad;
-        ctx.roundRect(10, 10, width - 20, height - 20, 32);
+        ctx.clearRect(0, 0, width, 170);
+        ctx.fillStyle = "rgba(18, 20, 29, 0.95)";
+        ctx.roundRect(10, 10, width - 20, 150, 28);
         ctx.fill();
-
-        const borderGrad = ctx.createLinearGradient(0, 0, width, 0);
-        borderGrad.addColorStop(0, "rgba(255, 215, 0, 0.8)");
-        borderGrad.addColorStop(0.5, "rgba(255, 235, 150, 1)");
-        borderGrad.addColorStop(1, "rgba(255, 215, 0, 0.8)");
-        
-        ctx.lineWidth = 6;
-        ctx.strokeStyle = borderGrad;
+        ctx.lineWidth = 5;
+        ctx.strokeStyle = "#FFD700";
         ctx.stroke();
-
         ctx.fillStyle = "#FFFFFF";
         ctx.font = "bold 44px sans-serif";
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
-        ctx.fillText(title + " ➔", width / 2, height / 2);
+        ctx.fillText(title + " ➔", width / 2, 85);
       }
 
       window.addEventListener('load', () => {
@@ -234,7 +187,7 @@
 
       const data = {
         europe: {
-          title: "🇪🇺 Europe Travels",
+          title: "Europe",
           countries: [
             { name: "Italy", flag: "🇮🇹", url: "https://disk.yandex.ru/d/85Pdg0fvxir31A" },
             { name: "Sardinia", icon: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Flag_of_Sardinia.svg/60px-Flag_of_Sardinia.svg.png", url: "https://disk.yandex.ru/d/i8U8ojtllbuH4g" },
@@ -249,28 +202,20 @@
           ]
         },
         southAmerica: {
-          title: "🌎 South America",
-          countries: [
-            { name: "Dominican Republic", flag: "🇩🇴", url: "https://disk.yandex.ru" }
-          ]
+          title: "South America",
+          countries: [{ name: "Dominican Republic", flag: "🇩🇴", url: "" }]
         },
         northAmerica: {
-          title: "🗽 North America",
-          countries: [
-            { name: "United States", flag: "🇺🇸", url: "https://disk.yandex.ru" }
-          ]
+          title: "North America",
+          countries: [{ name: "United States", flag: "🇺🇸", url: "" }]
         },
         africa: {
-          title: "🌍 Africa & Gulf",
-          countries: [
-            { name: "UAE / Dubai", flag: "🇦🇪", url: "https://disk.yandex.ru" }
-          ]
+          title: "Africa & Gulf",
+          countries: [{ name: "UAE / Dubai", flag: "🇦🇪", url: "" }]
         },
         asia: {
-          title: "⛩️ Asia & Oceania",
-          countries: [
-            { name: "Thailand", flag: "🇹🇭", url: "https://disk.yandex.ru" }
-          ]
+          title: "Asia & Oceania",
+          countries: [{ name: "Thailand", flag: "🇹🇭", url: "" }]
         }
       };
 
@@ -287,86 +232,80 @@
           div.className = 'country-btn';
           div.onclick = () => loadGallery(item.name, item.url);
           
-          let flagMarkup = '';
-          if (item.icon) {
-            flagMarkup = `<img src="${item.icon}" class="flag-img" alt="${item.name}">`;
-          } else if (item.flag) {
-            flagMarkup = `<span style="font-size: 1.25rem;">${item.flag}</span>`;
-          }
+          let flagMarkup = item.icon 
+            ? `<img src="${item.icon}">` 
+            : `<span style="font-size:1.2rem;">${item.flag || '📍'}</span>`;
 
           div.innerHTML = `
-            <div class="left-content">
+            <div class="left-box">
               ${flagMarkup}
               <span>${item.name}</span>
             </div>
-            <span style="color: rgba(255,215,0,0.8); font-size:14px;">Фото ➔</span>
+            <span style="color:#FFD700; font-size:13px;">Смотреть ➔</span>
           `;
-          
           container.appendChild(div);
         });
 
         document.getElementById('modal-overlay').style.display = 'block';
-        setTimeout(() => {
-          document.getElementById('modal-overlay').classList.add('active');
-          document.getElementById('modal').classList.add('active');
-        }, 10);
+        document.getElementById('modal').style.display = 'flex';
       }
 
       function closeModal() {
-        document.getElementById('modal-overlay').classList.remove('active');
-        document.getElementById('modal').classList.remove('active');
-        setTimeout(() => {
-          document.getElementById('modal-overlay').style.display = 'none';
-        }, 300);
+        document.getElementById('modal-overlay').style.display = 'none';
+        document.getElementById('modal').style.display = 'none';
       }
 
-      /* Логика встроенной фотогалереи */
       let currentPhotos = [];
       let currentIndex = 0;
 
       async function loadGallery(countryName, diskUrl) {
+        if (!diskUrl) {
+          alert('Папка с фото ещё не привязана');
+          return;
+        }
+
         closeModal();
-        const viewer = document.getElementById('gallery-viewer');
-        const loader = document.getElementById('gallery-loader');
-        const img = document.getElementById('gallery-img');
-        
-        document.getElementById('gallery-title').innerText = countryName;
-        viewer.classList.add('active');
-        loader.style.display = 'block';
+        const gallery = document.getElementById('gallery-box');
+        const status = document.getElementById('g-status');
+        const img = document.getElementById('g-image');
+
+        document.getElementById('g-title').innerText = countryName;
+        gallery.style.display = 'flex';
+        status.style.display = 'block';
+        status.innerText = 'Загрузка фото...';
         img.style.display = 'none';
+        currentPhotos = [];
 
         try {
-          // Запрос списка картинок через API Яндекс Диска
-          const apiUrl = `https://cloud-api.yandex.net/v1/disk/public/resources?public_key=${encodeURIComponent(diskUrl)}&limit=100`;
-          const res = await fetch(apiUrl);
+          const res = await fetch(`https://cloud-api.yandex.net/v1/disk/public/resources?public_key=${encodeURIComponent(diskUrl)}&limit=100`);
           const json = await res.json();
 
           if (json._embedded && json._embedded.items) {
             currentPhotos = json._embedded.items
-              .filter(item => item.mime_type && item.mime_type.startsWith('image/'))
-              .map(item => item.file);
+              .filter(f => f.mime_type && f.mime_type.startsWith('image/'))
+              .map(f => f.file);
           }
 
           if (currentPhotos.length > 0) {
             currentIndex = 0;
-            showPhoto(currentIndex);
+            showPhoto(0);
           } else {
-            loader.innerText = 'В этой папке пока нет фотографий';
+            status.innerText = 'В этой папке нет фото';
           }
-        } catch (e) {
-          loader.innerText = 'Не удалось загрузить фото';
+        } catch (err) {
+          status.innerText = 'Ошибка загрузки файлов';
         }
       }
 
-      function showPhoto(index) {
-        const img = document.getElementById('gallery-img');
-        const loader = document.getElementById('gallery-loader');
-        const counter = document.getElementById('gallery-counter');
+      function showPhoto(idx) {
+        const img = document.getElementById('g-image');
+        const status = document.getElementById('g-status');
+        const count = document.getElementById('g-count');
 
-        loader.style.display = 'none';
+        status.style.display = 'none';
         img.style.display = 'block';
-        img.src = currentPhotos[index];
-        counter.innerText = `${index + 1} / ${currentPhotos.length}`;
+        img.src = currentPhotos[idx];
+        count.innerText = `${idx + 1} / ${currentPhotos.length}`;
       }
 
       function nextPhoto() {
@@ -382,11 +321,7 @@
       }
 
       function closeGallery() {
-        document.getElementById('gallery-viewer').classList.remove('active');
-      }
-
-      if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('./sw.js');
+        document.getElementById('gallery-box').style.display = 'none';
       }
     </script>
   </body>
