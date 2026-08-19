@@ -38,6 +38,7 @@
   <body>
     <div id="hint">Point camera at a continent and tap the button</div>
 
+    <!-- Всплывающее окно выбора страны -->
     <div id="modal">
       <h3 id="modal-title">Select Country</h3>
       <div id="modal-links"></div>
@@ -61,31 +62,31 @@
       
       <a-camera position="0 0 0" look-controls="enabled: false" cursor="fuse: false; rayOrigin: mouse;" raycaster="far: 10000; objects: .clickable"></a-camera>
 
-      <!-- targetIndex: 1: EUROPE -->
+      <!-- 1: EUROPE -->
       <a-entity mindar-image-target="targetIndex: 1">
         <a-plane class="clickable" position="-0.15 -0.06 0.01" width="0.26" height="0.07" material="src: #btn-europe; transparent: true;"
                  onclick="openMenu('europe')"></a-plane>
       </a-entity>
 
-      <!-- targetIndex: 2: NORTH AMERICA -->
+      <!-- 2: NORTH AMERICA -->
       <a-entity mindar-image-target="targetIndex: 2">
         <a-plane class="clickable" position="0.0 0.0 0.01" width="0.33" height="0.07" material="src: #btn-north-america; transparent: true;"
                  onclick="openMenu('northAmerica')"></a-plane>
       </a-entity>
 
-      <!-- targetIndex: 3: SOUTH AMERICA -->
+      <!-- 3: SOUTH AMERICA -->
       <a-entity mindar-image-target="targetIndex: 3">
         <a-plane class="clickable" position="0.0 0.05 0.01" width="0.33" height="0.07" material="src: #btn-south-america; transparent: true;"
                  onclick="openMenu('southAmerica')"></a-plane>
       </a-entity>
 
-      <!-- targetIndex: 4: AFRICA -->
+      <!-- 4: AFRICA & GULF -->
       <a-entity mindar-image-target="targetIndex: 4">
         <a-plane class="clickable" position="0.0 0.0 0.01" width="0.30" height="0.07" material="src: #btn-africa; transparent: true;"
                  onclick="openMenu('africa')"></a-plane>
       </a-entity>
 
-      <!-- targetIndex: 5: ASIA -->
+      <!-- 5: ASIA & OCEANIA -->
       <a-entity mindar-image-target="targetIndex: 5">
         <a-plane class="clickable" position="0.0 0.0 0.01" width="0.34" height="0.07" material="src: #btn-asia; transparent: true;"
                  onclick="openMenu('asia')"></a-plane>
@@ -114,17 +115,15 @@
         ctx.fillText(text, width / 2, 80);
       }
 
-      drawButton('btn-europe', 'Europe', 600);
-      drawButton('btn-north-america', 'North America', 760);
-      drawButton('btn-south-america', 'South America', 760);
-      drawButton('btn-africa', 'Africa & Gulf', 700);
-      drawButton('btn-asia', 'Asia & Oceania', 780);
+      window.addEventListener('load', () => {
+        drawButton('btn-europe', 'Europe', 600);
+        drawButton('btn-north-america', 'North America', 760);
+        drawButton('btn-south-america', 'South America', 760);
+        drawButton('btn-africa', 'Africa & Gulf', 700);
+        drawButton('btn-asia', 'Asia & Oceania', 780);
+      });
 
       const data = {
-        europe: {
-          title: "Europe Travels",
-          countries: [
-            const data = {
         europe: {
           title: "Europe Travels",
           countries: [
@@ -143,52 +142,25 @@
         southAmerica: {
           title: "South America",
           countries: [
-            { name: "Dominican Republic", url: "https://disk.yandex.ru/d/ССЫЛКА_ДОМИНИКАНА" }
+            { name: "Dominican Republic", url: "https://disk.yandex.ru" }
           ]
         },
         northAmerica: {
           title: "North America",
           countries: [
-            { name: "United States", url: "https://disk.yandex.ru/d/ССЫЛКА_США" }
+            { name: "United States", url: "https://disk.yandex.ru" }
           ]
         },
         africa: {
           title: "Africa & Gulf",
           countries: [
-            { name: "UAE / Dubai", url: "https://disk.yandex.ru/d/ССЫЛКА_ОАЭ" }
+            { name: "UAE / Dubai", url: "https://disk.yandex.ru" }
           ]
         },
         asia: {
           title: "Asia & Oceania",
           countries: [
-            { name: "Thailand", url: "https://disk.yandex.ru/d/ССЫЛКА_ТАИЛАНД" }
-          ]
-        }
-      };
-          ]
-        },
-        southAmerica: {
-          title: "South America",
-          countries: [
-            { name: "Dominican Republic", url: "https://disk.yandex.ru/d/ССЫЛКА_ДОМИНИКАНА" }
-          ]
-        },
-        northAmerica: {
-          title: "North America",
-          countries: [
-            { name: "United States", url: "https://disk.yandex.ru/d/ССЫЛКА_США" }
-          ]
-        },
-        africa: {
-          title: "Africa & Gulf",
-          countries: [
-            { name: "UAE / Dubai", url: "https://disk.yandex.ru/d/ССЫЛКА_ОАЭ" }
-          ]
-        },
-        asia: {
-          title: "Asia & Oceania",
-          countries: [
-            { name: "Thailand", url: "https://disk.yandex.ru/d/ССЫЛКА_ТАИЛАНД" }
+            { name: "Thailand", url: "https://disk.yandex.ru" }
           ]
         }
       };
