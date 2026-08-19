@@ -38,7 +38,6 @@
   <body>
     <div id="hint">✨ Point camera at a continent and tap the button</div>
 
-    <!-- Всплывающее меню со странами -->
     <div id="modal">
       <h3 id="modal-title">Select Country</h3>
       <div id="modal-links"></div>
@@ -62,41 +61,31 @@
       
       <a-camera position="0 0 0" look-controls="enabled: false" cursor="fuse: false; rayOrigin: mouse;" raycaster="far: 10000; objects: .clickable"></a-camera>
 
-      <!-- ========================================== -->
-      <!-- ФОТО 2 (targetIndex: 1): EUROPE            -->
-      <!-- ========================================== -->
+      <!-- ФОТО 2: EUROPE -->
       <a-entity mindar-image-target="targetIndex: 1">
         <a-plane class="clickable" position="-0.15 -0.06 0.01" width="0.26" height="0.07" material="src: #btn-europe; transparent: true;"
                  onclick="openMenu('europe')"></a-plane>
       </a-entity>
 
-      <!-- ========================================== -->
-      <!-- ФОТО 3 (targetIndex: 2): NORTH AMERICA     -->
-      <!-- ========================================== -->
+      <!-- ФОТО 3: NORTH AMERICA -->
       <a-entity mindar-image-target="targetIndex: 2">
         <a-plane class="clickable" position="0.0 0.0 0.01" width="0.33" height="0.07" material="src: #btn-north-america; transparent: true;"
                  onclick="openMenu('northAmerica')"></a-plane>
       </a-entity>
 
-      <!-- ========================================== -->
-      <!-- ФОТО 4 (targetIndex: 3): SOUTH AMERICA     -->
-      <!-- ========================================== -->
+      <!-- ФОТО 4: SOUTH AMERICA -->
       <a-entity mindar-image-target="targetIndex: 3">
         <a-plane class="clickable" position="0.0 0.05 0.01" width="0.33" height="0.07" material="src: #btn-south-america; transparent: true;"
                  onclick="openMenu('southAmerica')"></a-plane>
       </a-entity>
 
-      <!-- ========================================== -->
-      <!-- ФОТО 5 (targetIndex: 4): AFRICA & GULF     -->
-      <!-- ========================================== -->
+      <!-- ФОТО 5: AFRICA & GULF -->
       <a-entity mindar-image-target="targetIndex: 4">
         <a-plane class="clickable" position="0.0 0.0 0.01" width="0.30" height="0.07" material="src: #btn-africa; transparent: true;"
                  onclick="openMenu('africa')"></a-plane>
       </a-entity>
 
-      <!-- ========================================== -->
-      <!-- ФОТО 6 (targetIndex: 5): ASIA & OCEANIA    -->
-      <!-- ========================================== -->
+      <!-- ФОТО 6: ASIA & OCEANIA -->
       <a-entity mindar-image-target="targetIndex: 5">
         <a-plane class="clickable" position="0.0 0.0 0.01" width="0.34" height="0.07" material="src: #btn-asia; transparent: true;"
                  onclick="openMenu('asia')"></a-plane>
@@ -131,12 +120,13 @@
       drawButton('btn-africa', '🌍 Africa & Gulf', 700);
       drawButton('btn-asia', '⛩️ Asia & Oceania', 780);
 
+      // Список ссылок: Сардиния теперь с собственным региональным флагом
       const data = {
         europe: {
           title: "🇪🇺 Europe Travels",
           countries: [
             { name: "🇮🇹 Italy", url: "https://disk.yandex.ru/d/ССЫЛКА_ИТАЛИЯ" },
-            { name: "🏝️ Sardinia", url: "https://disk.yandex.ru/d/ССЫЛКА_САРДИНИЯ" },
+            { name: "🏴󠁧󠁢󠁳󠁣󠁴󠁿 Sardinia (Ichnusa)", icon: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Flag_of_Sardinia.svg/60px-Flag_of_Sardinia.svg.png", url: "https://disk.yandex.ru/d/ССЫЛКА_САРДИНИЯ" },
             { name: "🇭🇷 Croatia", url: "https://disk.yandex.ru/d/ССЫЛКА_ХОРВАТИЯ" },
             { name: "🇪🇸 Spain", url: "https://disk.yandex.ru/d/ССЫЛКА_ИСПАНИЯ" },
             { name: "🇵🇹 Portugal", url: "https://disk.yandex.ru/d/ССЫЛКА_ПОРТУГАЛИЯ" },
@@ -184,9 +174,15 @@
         region.countries.forEach(item => {
           const a = document.createElement('a');
           a.className = 'country-btn';
-          a.innerText = item.name;
           a.href = item.url;
           a.target = '_blank';
+          
+          if (item.icon) {
+            a.innerHTML = `<img src="${item.icon}" style="width:20px; vertical-align:middle; margin-right:8px; border-radius:2px;"> ${item.name}`;
+          } else {
+            a.innerText = item.name;
+          }
+          
           container.appendChild(a);
         });
 
