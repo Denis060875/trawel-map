@@ -1,15 +1,143 @@
-<script>
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <meta charset="utf-8" />
+    <title>Travel Map AR</title>
+
+    <!-- PWA Settings -->
+    <link rel="manifest" href="./manifest.json">
+    <meta name="theme-color" content="#0d0e12">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Travel Map">
+    <link rel="apple-touch-icon" href="./icon.png">
+
+    <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-aframe.prod.js"></script>
+    
+    <style>
+      * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+      body { margin: 0; overflow: hidden; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: #000; }
+      
+      #hint {
+        position: absolute; top: 20px; left: 50%; transform: translateX(-50%);
+        background: rgba(18, 20, 29, 0.85); color: #fff; padding: 10px 22px;
+        border-radius: 30px; font-size: 13px; font-weight: 500; z-index: 10; pointer-events: none;
+        border: 1px solid rgba(255, 215, 0, 0.4); text-align: center; white-space: nowrap;
+        backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+      }
+
+      #modal-overlay {
+        display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+        z-index: 999;
+      }
+
+      #modal {
+        display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+        background: rgba(22, 24, 34, 0.96);
+        border: 1px solid rgba(255, 215, 0, 0.4); border-radius: 22px;
+        padding: 20px; width: 88%; max-width: 350px; max-height: 80vh;
+        z-index: 1000; box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+        flex-direction: column;
+      }
+
+      #modal h3 {
+        margin: 0 0 16px 0; font-size: 20px; font-weight: 700; text-align: center; color: #FFD700;
+      }
+
+      #modal-links {
+        overflow-y: auto; display: flex; flex-direction: column; gap: 9px; max-height: 55vh;
+        padding-right: 2px;
+      }
+
+      .country-btn {
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 12px 15px; background: rgba(255, 255, 255, 0.06); color: #fff;
+        border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 14px;
+        font-size: 15px; text-decoration: none; transition: 0.2s ease;
+      }
+      .country-btn:active { background: rgba(255, 215, 0, 0.25); border-color: #FFD700; transform: scale(0.98); }
+      .country-btn .left-box { display: flex; align-items: center; gap: 10px; }
+      .country-btn img { width: 22px; height: 15px; object-fit: cover; border-radius: 2px; }
+
+      .close-btn {
+        margin-top: 15px; padding: 11px; background: rgba(255, 255, 255, 0.08);
+        color: #bbb; border: none; border-radius: 12px; font-size: 14px; font-weight: 600;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="hint">✨ Наведите камеру на карту и коснитесь материка</div>
+
+    <div id="modal-overlay" onclick="closeModal()"></div>
+
+    <div id="modal">
+      <h3 id="modal-title">Страны</h3>
+      <div id="modal-links"></div>
+      <button class="close-btn" onclick="closeModal()">Закрыть ✕</button>
+    </div>
+
+    <a-scene 
+      mindar-image="imageTargetSrc: ./targets.mind; maxTrack: 2;" 
+      color-space="sRGB" 
+      renderer="colorManagement: true, physicallyCorrectLights" 
+      vr-mode-ui="enabled: false" 
+      device-orientation-permission-ui="enabled: false">
+
+      <a-assets>
+        <canvas id="btn-europe" width="600" height="170"></canvas>
+        <canvas id="btn-north-america" width="760" height="170"></canvas>
+        <canvas id="btn-south-america" width="760" height="170"></canvas>
+        <canvas id="btn-africa" width="700" height="170"></canvas>
+        <canvas id="btn-asia" width="780" height="170"></canvas>
+      </a-assets>
+      
+      <a-camera position="0 0 0" look-controls="enabled: false" cursor="fuse: false; rayOrigin: mouse;" raycaster="far: 10000; objects: .clickable"></a-camera>
+
+      <!-- 1: EUROPE -->
+      <a-entity mindar-image-target="targetIndex: 1">
+        <a-plane class="clickable" position="-0.15 -0.06 0.01" width="0.26" height="0.075" material="src: #btn-europe; transparent: true;" onclick="openMenu('europe')"></a-plane>
+      </a-entity>
+
+      <!-- 2: NORTH AMERICA -->
+      <a-entity mindar-image-target="targetIndex: 2">
+        <a-plane class="clickable" position="0.0 0.0 0.01" width="0.33" height="0.075" material="src: #btn-north-america; transparent: true;" onclick="openMenu('northAmerica')"></a-plane>
+      </a-entity>
+
+      <!-- 3: SOUTH AMERICA -->
+      <a-entity mindar-image-target="targetIndex: 3">
+        <a-plane class="clickable" position="0.0 0.05 0.01" width="0.33" height="0.075" material="src: #btn-south-america; transparent: true;" onclick="openMenu('southAmerica')"></a-plane>
+      </a-entity>
+
+      <!-- 4: AFRICA & GULF -->
+      <a-entity mindar-image-target="targetIndex: 4">
+        <a-plane class="clickable" position="0.0 0.0 0.01" width="0.30" height="0.075" material="src: #btn-africa; transparent: true;" onclick="openMenu('africa')"></a-plane>
+      </a-entity>
+
+      <!-- 5: ASIA & OCEANIA -->
+      <a-entity mindar-image-target="targetIndex: 5">
+        <a-plane class="clickable" position="0.0 0.0 0.01" width="0.34" height="0.075" material="src: #btn-asia; transparent: true;" onclick="openMenu('asia')"></a-plane>
+      </a-entity>
+    </a-scene>
+
+    <script>
       function drawButton(canvasId, title, width) {
         const canvas = document.getElementById(canvasId);
         if (!canvas) return;
         const ctx = canvas.getContext('2d');
         ctx.clearRect(0, 0, width, 170);
+        
         ctx.fillStyle = "rgba(18, 20, 29, 0.95)";
         ctx.roundRect(10, 10, width - 20, 150, 28);
         ctx.fill();
+
         ctx.lineWidth = 5;
         ctx.strokeStyle = "#FFD700";
         ctx.stroke();
+
         ctx.fillStyle = "#FFFFFF";
         ctx.font = "bold 44px sans-serif";
         ctx.textAlign = "center";
@@ -27,7 +155,7 @@
 
       const data = {
         europe: {
-          title: "Europe",
+          title: "🇪🇺 Europe",
           countries: [
             { name: "Italy", flag: "🇮🇹", url: "https://disk.yandex.ru/d/85Pdg0fvxir31A" },
             { name: "Sardinia", icon: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Flag_of_Sardinia.svg/60px-Flag_of_Sardinia.svg.png", url: "https://disk.yandex.ru/d/i8U8ojtllbuH4g" },
@@ -42,20 +170,20 @@
           ]
         },
         southAmerica: {
-          title: "South America",
-          countries: [{ name: "Dominican Republic", flag: "🇩🇴", url: "" }]
+          title: "🌎 South America",
+          countries: [{ name: "Dominican Republic", flag: "🇩🇴", url: "https://disk.yandex.ru" }]
         },
         northAmerica: {
-          title: "North America",
-          countries: [{ name: "United States", flag: "🇺🇸", url: "" }]
+          title: "🗽 North America",
+          countries: [{ name: "United States", flag: "🇺🇸", url: "https://disk.yandex.ru" }]
         },
         africa: {
-          title: "Africa & Gulf",
-          countries: [{ name: "UAE / Dubai", flag: "🇦🇪", url: "" }]
+          title: "🌍 Africa & Gulf",
+          countries: [{ name: "UAE / Dubai", flag: "🇦🇪", url: "https://disk.yandex.ru" }]
         },
         asia: {
-          title: "Asia & Oceania",
-          countries: [{ name: "Thailand", flag: "🇹🇭", url: "" }]
+          title: "⛩️ Asia & Oceania",
+          countries: [{ name: "Thailand", flag: "🇹🇭", url: "https://disk.yandex.ru" }]
         }
       };
 
@@ -68,22 +196,23 @@
         container.innerHTML = '';
 
         region.countries.forEach(item => {
-          const div = document.createElement('div');
-          div.className = 'country-btn';
-          div.onclick = () => loadGallery(item.name, item.url);
+          const a = document.createElement('a');
+          a.className = 'country-btn';
+          a.href = item.url;
+          a.target = '_blank';
           
           let flagMarkup = item.icon 
             ? `<img src="${item.icon}">` 
-            : `<span style="font-size:1.2rem;">${item.flag || '📍'}</span>`;
+            : `<span style="font-size:1.25rem;">${item.flag || '📍'}</span>`;
 
-          div.innerHTML = `
+          a.innerHTML = `
             <div class="left-box">
               ${flagMarkup}
               <span>${item.name}</span>
             </div>
-            <span style="color:#FFD700; font-size:13px;">Смотреть ➔</span>
+            <span style="color:#FFD700; font-size:13px; font-weight:600;">Альбом ↗</span>
           `;
-          container.appendChild(div);
+          container.appendChild(a);
         });
 
         document.getElementById('modal-overlay').style.display = 'block';
@@ -95,79 +224,9 @@
         document.getElementById('modal').style.display = 'none';
       }
 
-      let currentPhotos = [];
-      let currentIndex = 0;
-
-      async function loadGallery(countryName, diskUrl) {
-        if (!diskUrl) {
-          alert('Папка с фото ещё не привязана');
-          return;
-        }
-
-        closeModal();
-        const gallery = document.getElementById('gallery-box');
-        const status = document.getElementById('g-status');
-        const img = document.getElementById('g-image');
-
-        document.getElementById('g-title').innerText = countryName;
-        gallery.style.display = 'flex';
-        status.style.display = 'block';
-        status.innerText = 'Загрузка фото...';
-        img.style.display = 'none';
-        currentPhotos = [];
-
-        try {
-          // Запрашиваем превью высокого разрешения (preview_size=XXL / 1280px)
-          const res = await fetch(`https://cloud-api.yandex.net/v1/disk/public/resources?public_key=${encodeURIComponent(diskUrl)}&limit=100&preview_size=XXL&preview_crop=false`);
-          const json = await res.json();
-
-          if (json._embedded && json._embedded.items) {
-            currentPhotos = json._embedded.items
-              .filter(f => f.mime_type && f.mime_type.startsWith('image/'))
-              .map(f => {
-                // Если есть готовый превью-URL без авторизации — берем его, иначе прямую ссылку
-                return f.sizes && f.sizes.length > 0 
-                  ? f.sizes[f.sizes.length - 1].url 
-                  : (f.preview || f.file);
-              });
-          }
-
-          if (currentPhotos.length > 0) {
-            currentIndex = 0;
-            showPhoto(0);
-          } else {
-            status.innerText = 'В этой папке нет фото';
-          }
-        } catch (err) {
-          status.innerText = 'Ошибка загрузки файлов';
-        }
-      }
-
-      function showPhoto(idx) {
-        const img = document.getElementById('g-image');
-        const status = document.getElementById('g-status');
-        const count = document.getElementById('g-count');
-
-        status.style.display = 'none';
-        img.style.display = 'block';
-        img.crossOrigin = "anonymous";
-        img.src = currentPhotos[idx];
-        count.innerText = `${idx + 1} / ${currentPhotos.length}`;
-      }
-
-      function nextPhoto() {
-        if (currentPhotos.length <= 1) return;
-        currentIndex = (currentIndex + 1) % currentPhotos.length;
-        showPhoto(currentIndex);
-      }
-
-      function prevPhoto() {
-        if (currentPhotos.length <= 1) return;
-        currentIndex = (currentIndex - 1 + currentPhotos.length) % currentPhotos.length;
-        showPhoto(currentIndex);
-      }
-
-      function closeGallery() {
-        document.getElementById('gallery-box').style.display = 'none';
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('./sw.js');
       }
     </script>
+  </body>
+</html>
